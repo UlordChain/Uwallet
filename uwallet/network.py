@@ -461,6 +461,7 @@ class Network(DaemonThread):
         return str(method) + (':' + str(params[0]) if params else '')
 
     def process_responses(self, interface):
+        #return the result from net
         responses = interface.get_responses()
         for request, response in responses:
             if request:
