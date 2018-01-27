@@ -100,20 +100,7 @@ class unet(PrintError):
             + rev_hex(res.get('claim_trie_root')) \
             + int_to_hex(int(res.get('timestamp')), 4) \
             + int_to_hex(int(res.get('bits')), 4) \
-            + rev_hex(res.get('nonce')) \
-            #+ rev_hex(res.get('solution'))
-        _len = len(res.get('solution')) / 2
-        str_len = ''
-        if _len < 253:
-            str_len = int_to_hex(_len, 1)
-        elif _len <= 0xfff:
-            str_len = int_to_hex(253, 1) + int_to_hex(_len, 2)
-        elif _len <= 0xFFFFFFFF:
-            str_len = int_to_hex(254, 1) + int_to_hex(_len, 4)
-        else:
-            str_len = int_to_hex(255, 1) + int_to_hex(_len, 8)
-        s += str_len
-        s += res.get('solution')
+            + int_to_hex(int(res.get('nonce')), 4)
         return s
 
     def serialize_header_save(self, res):
@@ -123,8 +110,7 @@ class unet(PrintError):
             + rev_hex(res.get('claim_trie_root')) \
             + int_to_hex(int(res.get('timestamp')), 4) \
             + int_to_hex(int(res.get('bits')), 4) \
-            + rev_hex(res.get('nonce')) \
-            + rev_hex(res.get('solution')) 
+            + int_to_hex(int(res.get('nonce')), 4)
         return s
 
 
@@ -136,9 +122,7 @@ class unet(PrintError):
         h['claim_trie_root'] = hash_encode(s[68:100])
         h['timestamp'] = hex_to_int(s[100:104])
         h['bits'] = hex_to_int(s[104:108])
-        #h['nonce'] = hex_to_int(s[108:140])
-        h['nonce'] = hash_encode(s[108:140]) #because int -> uint256s
-        h['solution'] = hash_encode(s[140:1484])
+        h['nonce'] = hex_to_int(s[108:112])
         return h
 
     def hash_header(self, header):

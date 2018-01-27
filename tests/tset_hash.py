@@ -31,8 +31,7 @@ def serialize_header(res):
         + rev_hex(res.get('claim_trie_root')) \
         + int_to_hex(int(res.get('timestamp')), 4) \
         + int_to_hex(int(res.get('bits')), 4) \
-        + rev_hex(res.get('nonce')) \
-        + rev_hex(res.get('solution'))
+        + int_to_hex(int(res.get('nonce')), 4)
     return s
 
 def hash_header(header):
