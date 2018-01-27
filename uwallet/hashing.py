@@ -1,6 +1,8 @@
 import hashlib
 import hmac
+from cryptohello_hash import cpu_has_aes_in_supported,cryptohello_hash
 
+HAS_AES_NI = cpu_has_aes_in_supported()
 
 def sha256(x):
     return hashlib.sha256(x).digest()
@@ -19,7 +21,7 @@ def ripemd160(x):
 def Hash(x):
     if type(x) is unicode:
         x = x.encode('utf-8')
-    return sha256(sha256(x))
+    return cryptohello_hash(x,HAS_AES_NI)
 
 
 def PowHash(x):
