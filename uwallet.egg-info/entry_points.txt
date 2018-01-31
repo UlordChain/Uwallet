@@ -1,0 +1,3 @@
+[console_scripts]
+uwallet = uwallet.main:main
+

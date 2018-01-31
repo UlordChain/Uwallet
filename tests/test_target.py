@@ -1,7 +1,7 @@
 from uwallet.blockchain import unet
 from uwallet.blockchain import ArithUint256
 
-GENESIS_BITS = 0x1f07ffff
+GENESIS_BITS = 0x1e0ffff0
 MAX_TARGET = 0x0007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 N_TARGET_TIMESPAN = 150
 

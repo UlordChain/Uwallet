@@ -1,0 +1,10 @@
+slowaes
+ecdsa
+pbkdf2
+requests
+jsonrpclib
+six
+appdirs
+protobuf
+jsonschema
+unetschema
