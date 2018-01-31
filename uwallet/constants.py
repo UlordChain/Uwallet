@@ -18,7 +18,7 @@ NO_SIGNATURE = 'ff'
 
 NULL_HASH = '0000000000000000000000000000000000000000000000000000000000000000'
 HEADER_SIZE = 112
-BLOCKS_PER_CHUNK = 96   #1d / 150s
+BLOCKS_PER_CHUNK = 30   #1d / 150s
 
 HEADERS_URL = "" #TODO add
 
@@ -34,11 +34,11 @@ blockchain_params = {
     'unet_main': {
         'pubkey_address': 0,
         'script_address': 5,
-        'pubkey_address_prefix': 36,   #85
+        'pubkey_address_prefix': 68,   #85
         'script_address_prefix': 16,   #122 204
         'genesis_hash': '000002287d4bdfb69539d264be0eae5f08c8f990732b84cb6c0834bcee80de3a',
         'max_target': 0x0007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF,
-        'genesis_bits': 0x1f07ffff,      #0x1f00ffff
+        'genesis_bits': 0x1e0ffff0,      #0x1f00ffff
         'target_timespan': 150           #150
     },
     'unet_test': {
