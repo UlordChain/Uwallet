@@ -50,11 +50,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="unet.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="unet.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/uwallet/unet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.24" vertical-offset="303" max-vertical-offset="13243">
-              <caret line="36" column="3" selection-start-line="36" selection-start-column="3" selection-end-line="36" selection-end-column="3" />
+            <state vertical-scroll-proportion="0.5644599" vertical-offset="303" max-vertical-offset="13243">
+              <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -62,11 +62,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="constants.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/uwallet/constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6286765" vertical-offset="342" max-vertical-offset="1330">
-              <caret line="36" column="36" selection-start-line="36" selection-start-column="36" selection-end-line="36" selection-end-column="36" />
+            <state vertical-scroll-proportion="-5.5272727" vertical-offset="342" max-vertical-offset="1330">
+              <caret line="34" column="28" selection-start-line="34" selection-start-column="28" selection-end-line="34" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -82,12 +82,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/uwallet/main.py">
+      <file leaf-file-name="simple_config.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/uwallet/simple_config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="243.4" vertical-offset="6180" max-vertical-offset="6688">
-              <caret line="16" column="41" selection-start-line="16" selection-start-column="41" selection-end-line="16" selection-end-column="41" />
-              <folding />
+            <state vertical-scroll-proportion="52.44" vertical-offset="1881" max-vertical-offset="4351">
+              <caret line="30" column="30" selection-start-line="30" selection-start-column="30" selection-end-line="30" selection-end-column="30" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -157,9 +159,9 @@
         <option value="$PROJECT_DIR$/uwallet/hashing.py" />
         <option value="$PROJECT_DIR$/uwallet/simple_config.py" />
         <option value="$PROJECT_DIR$/uwallet/blockchain.py" />
-        <option value="$PROJECT_DIR$/uwallet/unet.py" />
         <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/uwallet/constants.py" />
+        <option value="$PROJECT_DIR$/uwallet/unet.py" />
       </list>
     </option>
   </component>
@@ -903,26 +905,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/uwallet/simple_config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.283972" vertical-offset="1881" max-vertical-offset="4351">
-          <caret line="30" column="30" selection-start-line="30" selection-start-column="30" selection-end-line="30" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/uwallet/unet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.24" vertical-offset="303" max-vertical-offset="13243">
-          <caret line="36" column="3" selection-start-line="36" selection-start-column="3" selection-end-line="36" selection-end-column="3" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/uwallet/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="243.4" vertical-offset="6180" max-vertical-offset="6688">
@@ -995,9 +977,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/uwallet/constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6286765" vertical-offset="342" max-vertical-offset="1330">
-          <caret line="36" column="36" selection-start-line="36" selection-start-column="36" selection-end-line="36" selection-end-column="36" />
+        <state vertical-scroll-proportion="-5.5272727" vertical-offset="342" max-vertical-offset="1330">
+          <caret line="34" column="28" selection-start-line="34" selection-start-column="28" selection-end-line="34" selection-end-column="28" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/uwallet/simple_config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="52.44" vertical-offset="1881" max-vertical-offset="4351">
+          <caret line="30" column="30" selection-start-line="30" selection-start-column="30" selection-end-line="30" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/uwallet/unet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5644599" vertical-offset="303" max-vertical-offset="13243">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

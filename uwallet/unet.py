@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 # the default values are for unet_main
 global PUBKEY_ADDRESS
 global SCRIPT_ADDRESS
-PUBKEY_ADDRESS = (0, 68)
+PUBKEY_ADDRESS = (0, 130)
 SCRIPT_ADDRESS = (5, 16)
 
 # AES encryption
