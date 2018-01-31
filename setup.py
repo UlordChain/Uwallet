@@ -4,6 +4,18 @@ from setuptools import find_packages, setup
 
 from uwallet import __version__
 
+from distutils.sysconfig import get_python_lib
+import shutil
+import platform
+current_place = get_python_lib()
+
+if platform.system().startswith('Win'):
+    shutil.copyfile(os.path.join('uwallet', 'cryptohello_hash.pyd'),
+                    os.path.join(current_place, 'cryptohello_hash.pyd'))
+else:
+    shutil.copyfile(os.path.join('uwallet', 'cryptohello_hash.so'),
+                    os.path.join(current_place, 'cryptohello_hash.so'))
+
 if sys.version_info[:3] < (2, 7, 0):
     sys.exit("Error: prowallet requires Python version >= 2.7.0...")
 
