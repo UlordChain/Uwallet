@@ -65,7 +65,7 @@ class unet(PrintError):
     def verify_chain(self, chain):
         first_header = chain[0]
         height = first_header['block_height']
-        prev_header = self.read_header(height - 1)
+        prev_header = self.read_header(height)
         for header in chain:
             height = header['block_height']
             if self.read_header(height) is not None:
