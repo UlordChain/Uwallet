@@ -28,7 +28,7 @@ def set_config(c):
 #TODO: modifi ip 
 DEFAULT_CONFIG = {
     'default_servers': {
-        '114.67.37.2': {'t': '10579'},
+        '114.67.37.2': {'t': '10534'},
     },
     'chain': 'unet_main'
 }

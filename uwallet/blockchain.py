@@ -5,7 +5,7 @@ import logging
 import unetschema
 from uwallet import unet
 from uwallet.util import hex_to_int, PrintError, int_to_hex, rev_hex
-from uwallet.hashing import hash_encode, Hash, Hash_Header
+from uwallet.hashing import hash_encode, Hash
 from uwallet.errors import ChainValidationError
 from uwallet.constants import HEADER_SIZE, HEADERS_URL, BLOCKS_PER_CHUNK, NULL_HASH
 from uwallet.constants import blockchain_params
@@ -65,7 +65,7 @@ class unet(PrintError):
     def verify_chain(self, chain):
         first_header = chain[0]
         height = first_header['block_height']
-        prev_header = self.read_header(height)
+        prev_header = self.read_header(height - 1)
         for header in chain:
             height = header['block_height']
             if self.read_header(height) is not None:
@@ -128,7 +128,12 @@ class unet(PrintError):
     def hash_header(self, header):
         if header is None:
             return '0' * 64
-        return hash_encode(Hash_Header(self.serialize_header(header).decode('hex')))
+        return hash_encode(Hash(self.serialize_header(header).decode('hex')))
+
+    def pow_hash_header(self, header):
+        if header is None:
+            return '0' * 64
+        return hash_encode(Hash(self.serialize_header(header).decode('hex')))
 
     def path(self):
         return os.path.join(self.config.path, 'blockchain_headers')
@@ -180,15 +185,16 @@ class unet(PrintError):
                 self.local_height = h
 
     def read_header(self, block_height):
-            name = self.path()
-            if os.path.exists(name):
-                f = open(name, 'rb')
-                f.seek(block_height * HEADER_SIZE)
-                h = f.read(HEADER_SIZE)
-                f.close()
-                if len(h) == HEADER_SIZE:
-                    h = self.deserialize_header(h)
-                    return h
+        name = self.path()
+        if os.path.exists(name):
+            f = open(name, 'rb')
+            f.seek(block_height * HEADER_SIZE)
+            h = f.read(HEADER_SIZE)
+            f.close()
+            if len(h) == HEADER_SIZE:
+                h = self.deserialize_header(h)
+                return h
+
     def get_target(self, index, first, last, chain='main'):
         """
         this follows the calculations in unet/src
