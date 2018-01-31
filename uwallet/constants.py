@@ -34,7 +34,7 @@ blockchain_params = {
     'unet_main': {
         'pubkey_address': 0,
         'script_address': 5,
-        'pubkey_address_prefix': 68,   #85
+        'pubkey_address_prefix': 130,   #85
         'script_address_prefix': 16,   #122 204
         'genesis_hash': '00000a98aa88364a5105f3d831368f823e14291a9cd2aba50d6eb5a416b97630',
         'max_target': 0x0007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF,
