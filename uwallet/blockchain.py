@@ -5,7 +5,7 @@ import logging
 import unetschema
 from uwallet import unet
 from uwallet.util import hex_to_int, PrintError, int_to_hex, rev_hex
-from uwallet.hashing import hash_encode, Hash
+from uwallet.hashing import hash_encode, Hash,Hash_Header
 from uwallet.errors import ChainValidationError
 from uwallet.constants import HEADER_SIZE, HEADERS_URL, BLOCKS_PER_CHUNK, NULL_HASH
 from uwallet.constants import blockchain_params
@@ -128,7 +128,7 @@ class unet(PrintError):
     def hash_header(self, header):
         if header is None:
             return '0' * 64
-        return hash_encode(Hash(self.serialize_header(header).decode('hex')))
+        return hash_encode(Hash_Header(self.serialize_header(header).decode('hex')))
 
     def pow_hash_header(self, header):
         if header is None:

@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.realpath('.'))
+
 import hashlib
 import hmac
 from cryptohello_hash import cpu_has_aes_in_supported,cryptohello_hash
@@ -21,8 +25,12 @@ def ripemd160(x):
 def Hash(x):
     if type(x) is unicode:
         x = x.encode('utf-8')
-    return cryptohello_hash(x,HAS_AES_NI)
+    return sha256(sha256(x))
 
+def Hash_Header(x):
+    if type(x) is unicode:
+        x = x.encode('utf-8')
+    return cryptohello_hash(x,HAS_AES_NI)
 
 def PowHash(x):
     if type(x) is unicode:
