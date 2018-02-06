@@ -27,6 +27,7 @@ def Hash(x):
         x = x.encode('utf-8')
     return sha256(sha256(x))
 
+#new hash instead of doublehash
 def Hash_Header(x):
     if type(x) is unicode:
         x = x.encode('utf-8')

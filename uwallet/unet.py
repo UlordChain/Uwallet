@@ -34,6 +34,7 @@ DecodeAES = lambda secret, e: aes.decryptData(secret, base64.b64decode(e))
 
 # get the claim id hash from txid bytes and int n
 def claim_id_hash(txid, n):
+
     return hash_160(txid + struct.pack('>I', n))
 
 
