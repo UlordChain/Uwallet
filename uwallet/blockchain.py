@@ -206,7 +206,7 @@ class unet(PrintError):
         # bits to target
         bits = last.get('bits')
         # print_error("Last bits: ", bits)
-        self.check_bits(bits)
+        #self.check_bits(bits)
 
         # new target
         nActualTimespan = last.get('timestamp') - first.get('timestamp')
