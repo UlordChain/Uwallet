@@ -2486,6 +2486,7 @@ class Commands(object):
 
         Either specify the claim with a claim_id or with txid and nout
         """
+        claim_id='cc9a1564f46613b02552b4d463a1d87f95e6fb65'
         claims = self.getnameclaims(raw=True, include_abandoned=False, include_supports=True,
                                     claim_id=claim_id, txid=txid, nout=nout,
                                     skip_validate_signatures=True)
@@ -2528,6 +2529,67 @@ class Commands(object):
                 return {'success': False, 'reason': out}
         return {'success': True, 'txid': tx.hash(), 'tx': str(tx),
                 'fee': str(Decimal(tx.get_fee()) / COIN)}
+#
+        # claim_id='12096f49550c4052f0510b4f902983b17c76f182'
+        # claims = self.getnameclaims(
+        #     raw=True, claim_id=claim_id, txid=txid, nout=nout,
+        #     skip_validate_signatures=True
+        # )
+        #
+        # if len(claims) > 1:
+        #     return {"success": False, 'reason': 'more than one claim that matches'}
+        # elif len(claims) == 0:
+        #     return {"success": False, 'reason': 'claim not found', 'claim_id': claim_id}
+        # else:
+        #     claim = claims[0]
+        #
+        # try:
+        #     claim_tx = self.wallet.get_spendable_claimtrietx_coin(claim['txid'], claim['nout'])
+        # except BaseException as err:
+        #     return {
+        #         "success": False,
+        #         "reason": "failed to find claim utxo (%s)" % err.message
+        #     }
+        #
+        # if return_addr is None:
+        #     return_addr = self.wallet.get_least_used_address()
+        #
+        # inputs = []
+        # spendable = [claim_tx]
+        # for spendable_coin in self.wallet.get_spendable_coins():
+        #     self.wallet.add_input_info(spendable_coin)
+        #     spendable.append(spendable_coin)
+        #
+        # while spendable:
+        #
+        #     inputs.append(spendable.pop(0))
+        #
+        #     tx = Transaction.from_io(inputs, [(TYPE_ADDRESS, return_addr, 0)])
+        #     fee = tx.estimated_fee(self.wallet.relayfee(), self.wallet.fee_per_kb(self.config))
+        #
+        #     change = tx.input_value() - fee
+        #     if change < 0:
+        #         # input doesn't cover the fee, add more inputs
+        #         continue
+        #
+        #     # final transaction with correct change
+        #     tx = Transaction.from_io(inputs, [(TYPE_ADDRESS, return_addr, change)])
+        #     self.wallet.sign_transaction(tx, self._password)
+        #
+        #     if broadcast:
+        #         success, out = self.wallet.send_tx(tx)
+        #         if not success:
+        #             return {'success': False, 'reason': out}
+        #
+        #     return {
+        #         'success': True,
+        #         'txid': tx.hash(),
+        #         'tx': str(tx),
+        #         'fee': str(Decimal(tx.get_fee()) / COIN)
+        #     }
+        #
+        # # ran out of spendables before 'change' could be greater than 0
+        # return {'success': False, 'reason': 'transaction fee exceeds amount available'}
 
 
 param_descriptions = {

@@ -97,6 +97,7 @@ def parse_scriptSig(d, bytes):
     pubkeys = [parse_xpub(x)[0] for x in x_pubkeys]  # xpub, addr = parse_xpub()
     redeemScript = Transaction.multisig_script(pubkeys, m)
     # write result in d
+
     d['num_sig'] = m
     d['signatures'] = parse_sig(x_sig)
     d['x_pubkeys'] = x_pubkeys
