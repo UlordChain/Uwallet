@@ -1697,7 +1697,8 @@ class Commands(object):
         """
 
         try:
-            decoded = smart_decode(val)
+            claim_value_decoded = base64.b64decode(val.decode('hex'))
+            decoded = smart_decode(claim_value_decoded)
             results = {'claim_dictionary': decoded.claim_dict,
                        'serialized': decoded.serialized.encode('hex')}
             return results
