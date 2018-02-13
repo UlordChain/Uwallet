@@ -1264,7 +1264,7 @@ class Commands(object):
     @command('n')
     def getvalueforuri(self, uri, raw=False, page=0, page_size=10):
         """
-        Resolve a UC URI
+        Resolve a UT URI
         """
 
         result = self.getvaluesforuris(raw, page, page_size, uri)
@@ -1275,7 +1275,7 @@ class Commands(object):
     @command('n')
     def getvaluesforuris(self, raw=False, page=0, page_size=10, *uris):
         """
-        Resolve a UC URI
+        Resolve a UT URI
         """
 
         page = int(page)
@@ -1681,7 +1681,7 @@ class Commands(object):
         # fee per kb will default to RECOMMENDED_FEE, which is 50000
         # relay fee will default to 5000
         # fee is max(relay_fee, size is fee_per_kb * esimated_size)
-        # will be roughly 10,000 deweys (0.0001 UC), standard abandon should be about 200 bytes
+        # will be roughly 10,000 deweys (0.0001 UT), standard abandon should be about 200 bytes
         # this is assuming config is not set to dynamic, which in case it will get fees from
         # unets fee estimation algorithm
 
@@ -2508,7 +2508,7 @@ class Commands(object):
         txout_value = i['value']
         # create outputs
         outputs = [(TYPE_ADDRESS, return_addr, txout_value)]
-        # fee will be roughly 10,000 deweys (0.0001 UC), standard abandon should be about 200 bytes
+        # fee will be roughly 10,000 deweys (0.0001 UT), standard abandon should be about 200 bytes
         # this is assuming config is not set to dynamic, which in case it will get fees from
         # unet's fee estimation algorithm
 
