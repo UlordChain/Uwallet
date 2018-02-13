@@ -1,4 +1,7 @@
 .idea/
 
+uwallet.egg-info/
+build/
 *.pyc
 
+uwallet/__init__.pyc
