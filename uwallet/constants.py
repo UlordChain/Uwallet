@@ -33,7 +33,7 @@ proxy_modes = ['socks4', 'socks5', 'http']
 blockchain_params = {
     'unet_main': {
         'pubkey_address': 0,
-        'script_address': 5,
+        'script_address': 5,#5,
         'pubkey_address_prefix': 130,   #85
         'script_address_prefix': 125,   #122 204
         'genesis_hash': '00cef5fc5328768c82fd51ed1537c98f84e557df5093929a4bd4a88587552f64',
@@ -43,7 +43,7 @@ blockchain_params = {
     },
     'unet_test': {
         'pubkey_address': 0,
-        'script_address': 5,
+        'script_address': 5,#5,
         'pubkey_address_prefix': 130,    #changed
         'script_address_prefix': 125,   #196,
         'genesis_hash': '04994b3eaeed96e070107823dfa796d5d45246e72ed838054780b4e6de455971',

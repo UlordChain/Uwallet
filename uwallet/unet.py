@@ -497,7 +497,7 @@ def random_seed(n):
     return "%032x" % ecdsa.util.randrange(pow(2, n))
 
 
-BIP32_PRIME = 0x80000000
+BIP32_PRIME = 0x80000000#0x80000000
 
 
 def get_pubkeys_from_secret(secret):
