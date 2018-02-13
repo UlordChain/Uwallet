@@ -47,11 +47,11 @@ setup(
     packages=find_packages(exclude=['tests']),
     package_data={'uwallet': ['wordlist/*.txt']},
     entry_points={'console_scripts': console_scripts},
-    description="Lightweight unet Wallet",
+    description="Lightweight ulord Wallet",
     author="UT Inc.",
     author_email="qiping@ulord.io",
     license="GNU GPLv3",
-    url="https://b.network",
-    long_description="""Lightweight unet Wallet""",
+    url="http://ulord.one/",
+    long_description="""Lightweight ulord Wallet""",
     zip_safe=False
 )
