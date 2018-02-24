@@ -35,12 +35,14 @@ from uwallet.errors import InvalidProofError, NotEnoughFunds
 from uwallet.util import format_satoshis, rev_hex
 from uwallet.mnemonic import Mnemonic
 
+from uwallet import gl
 
 log = logging.getLogger(__name__)
 
 known_commands = {}
 ADDRESS_LENGTH = 25
 MAX_PAGE_SIZE = 500
+
 
 # Format amount to be decimal encoded string
 # Format value to be hex encoded string
@@ -2486,7 +2488,8 @@ class Commands(object):
 
         Either specify the claim with a claim_id or with txid and nout
         """
-        claim_id='cc9a1564f46613b02552b4d463a1d87f95e6fb65'
+        # claim_id='316b734af2cd3fe13f6ecce5ddb4d9968cfe1611'
+        gl.flag_abandon = True
         claims = self.getnameclaims(raw=True, include_abandoned=False, include_supports=True,
                                     claim_id=claim_id, txid=txid, nout=nout,
                                     skip_validate_signatures=True)

@@ -14,6 +14,7 @@ from uwallet.unet import hash_160_to_bc_address, bc_address_to_hash_160, op_push
 from uwallet.unet import address_from_private_key, point_to_ser, MyVerifyingKey, MySigningKey
 from uwallet.unet import public_key_to_bc_address, regenerate_key, public_key_from_private_key
 from uwallet.util import print_error, profiler, var_int, int_to_hex, parse_sig
+from uwallet import gl
 
 log = logging.getLogger()
 
@@ -416,8 +417,11 @@ class Transaction(object):
             claim_name, claim_value = claim
             script += 'b5'  # op_claim_name
             script += push_script(claim_name.encode('hex'))
-            # In order to solve unet can not resolve Unicode      
-            claim_value=base64.b64encode(claim_value)          #+
+            # In order to solve unet can not resolve Unicode
+            if not gl.flag_abandon:
+                claim_value = base64.b64encode(claim_value)
+            else:
+                gl.flag_abandon = False
             script += push_script(claim_value.encode('hex'))
             script += '6d75'  # op_2drop, op_drop
         elif output_type & TYPE_SUPPORT:
