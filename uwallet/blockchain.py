@@ -100,7 +100,7 @@ class unet(PrintError):
             + rev_hex(res.get('claim_trie_root')) \
             + int_to_hex(int(res.get('timestamp')), 4) \
             + int_to_hex(int(res.get('bits')), 4) \
-            + int_to_hex(int(res.get('nonce')), 4)
+            + rev_hex(res.get('nonce'))
         return s
 
     def serialize_header_save(self, res):
@@ -110,7 +110,7 @@ class unet(PrintError):
             + rev_hex(res.get('claim_trie_root')) \
             + int_to_hex(int(res.get('timestamp')), 4) \
             + int_to_hex(int(res.get('bits')), 4) \
-            + int_to_hex(int(res.get('nonce')), 4)
+            + rev_hex(res.get('nonce'))
         return s
 
 
@@ -122,7 +122,7 @@ class unet(PrintError):
         h['claim_trie_root'] = hash_encode(s[68:100])
         h['timestamp'] = hex_to_int(s[100:104])
         h['bits'] = hex_to_int(s[104:108])
-        h['nonce'] = hex_to_int(s[108:112])
+        h['nonce'] = hash_encode(s[108:140])
         return h
 
     def hash_header(self, header):

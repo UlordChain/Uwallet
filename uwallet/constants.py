@@ -17,7 +17,7 @@ RECOMMENDED_CLAIMTRIE_HASH_CONFIRMS = 1
 NO_SIGNATURE = 'ff'
 
 NULL_HASH = '0000000000000000000000000000000000000000000000000000000000000000'
-HEADER_SIZE = 112
+HEADER_SIZE = 140
 BLOCKS_PER_CHUNK = 96   #1d / 150s
 
 #TODO add it. --JustinQP
@@ -37,8 +37,8 @@ blockchain_params = {
         'script_address': 5,
         'pubkey_address_prefix': 68,
         'script_address_prefix': 63,
-        'genesis_hash': '000064440d74c1ebea3234a8d778fbb49267ded6b11fe7117dc6f6d41d8cf705',
-        'max_target': 0x00007fffff000000000000000000000000000000000000000000000000000000,
+        'genesis_hash': '000000e32e974118821c865e0f79cd851edd96ccdf161de997ee85c438d0e7e3',
+        'max_target': 0x00001d1459000000000000000000000000000000000000000000000000000000,
         'genesis_bits': 0x1e1d1459,
         'target_timespan': 150 
     },
