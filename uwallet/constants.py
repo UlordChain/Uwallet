@@ -20,7 +20,8 @@ NULL_HASH = '0000000000000000000000000000000000000000000000000000000000000000'
 HEADER_SIZE = 112
 BLOCKS_PER_CHUNK = 96   #1d / 150s
 
-HEADERS_URL = "" #TODO add
+#TODO add it. --JustinQP
+HEADERS_URL = "" 
 
 DEFAULT_PORTS = {'t': '10579', 's': '50002', 'h': '8081', 'g': '8082'}
 NODES_RETRY_INTERVAL = 60
@@ -33,33 +34,32 @@ proxy_modes = ['socks4', 'socks5', 'http']
 blockchain_params = {
     'unet_main': {
         'pubkey_address': 0,
-        'script_address': 5,#5,
-        'pubkey_address_prefix': 130,   #85
-        'script_address_prefix': 125,   #122 204
-        'genesis_hash': '00cef5fc5328768c82fd51ed1537c98f84e557df5093929a4bd4a88587552f64',
-        'max_target': 0x00ffffffff000000000000000000000000000000000000000000000000000000,#0x0007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF,
-        'genesis_bits': 0x2000ffff,      #0x1f00ffff
-        'target_timespan': 150           #150
+        'script_address': 5,
+        'pubkey_address_prefix': 68,
+        'script_address_prefix': 63,
+        'genesis_hash': '000064440d74c1ebea3234a8d778fbb49267ded6b11fe7117dc6f6d41d8cf705',
+        'max_target': 0x00007fffff000000000000000000000000000000000000000000000000000000,
+        'genesis_bits': 0x1e1d1459,
+        'target_timespan': 150 
     },
     'unet_test': {
         'pubkey_address': 0,
-        'script_address': 5,#5,
-        'pubkey_address_prefix': 130,    #changed
-        'script_address_prefix': 125,   #196,
+        'script_address': 5,
+        'pubkey_address_prefix': 130,
+        'script_address_prefix': 125,
         'genesis_hash': '04994b3eaeed96e070107823dfa796d5d45246e72ed838054780b4e6de455971',
         'max_target': 0x07FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF,
-        'genesis_bits': 0x2007ffff,     #0x1f00ffff
+        'genesis_bits': 0x2007ffff,
         'target_timespan': 150
     },
     'unet_regtest': {
         'pubkey_address': 0,
         'script_address': 5,
-        'pubkey_address_prefix': 34,
-        'script_address_prefix': 239,
-        'genesis_hash': '01c8d71dc9be94898366fa035561a8b58b2ca9a78f2ce9601ef07038e13d54ff',
+        'pubkey_address_prefix': 140,
+        'script_address_prefix': 120,
+        'genesis_hash': '0158f211e2881c0e725fcc6ec25db2b72ad4a3f8f7830a516e9d6570e9527fd1',
         'max_target': 0x0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F,     
         'genesis_bits': 0x200f0f0f,
-        'target_timespan': 150          #150? should be less
+        'target_timespan': 150
     }
 }
- 
