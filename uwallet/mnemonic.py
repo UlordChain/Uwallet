@@ -28,7 +28,7 @@ import ecdsa
 import pbkdf2
 
 from uwallet import version
-from uwallet.unet import is_new_seed
+from uwallet.ulord import is_new_seed
 
 log = logging.getLogger(__name__)
 

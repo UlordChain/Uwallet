@@ -30,9 +30,9 @@ MAX_BATCH_QUERY_SIZE = 500
 proxy_modes = ['socks4', 'socks5', 'http']
 
 # Main network and testnet3 definitions
-# these values follow the parameters in unet/src/chainparams.cpp
+# these values follow the parameters in ulord/src/chainparams.cpp
 blockchain_params = {
-    'unet_main': {
+    'ulord_main': {
         'pubkey_address': 0,
         'script_address': 5,
         'pubkey_address_prefix': 68,
@@ -42,7 +42,7 @@ blockchain_params = {
         'genesis_bits': 0x1e1d1459,
         'target_timespan': 150 
     },
-    'unet_test': {
+    'ulord_test': {
         'pubkey_address': 0,
         'script_address': 5,
         'pubkey_address_prefix': 130,
@@ -52,7 +52,7 @@ blockchain_params = {
         'genesis_bits': 0x2007ffff,
         'target_timespan': 150
     },
-    'unet_regtest': {
+    'ulord_regtest': {
         'pubkey_address': 0,
         'script_address': 5,
         'pubkey_address_prefix': 140,

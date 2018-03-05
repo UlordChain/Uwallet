@@ -24,9 +24,9 @@ from uwallet.constants import COIN, TYPE_ADDRESS, TYPE_CLAIM, TYPE_SUPPORT, TYPE
 from uwallet.constants import RECOMMENDED_CLAIMTRIE_HASH_CONFIRMS, MAX_BATCH_QUERY_SIZE
 from uwallet.hashing import Hash, hash_160
 from uwallet.claims import verify_proof
-from uwallet.unet import hash_160_to_bc_address, is_address, decode_claim_id_hex
-from uwallet.unet import encode_claim_id_hex, encrypt_message, public_key_from_private_key
-from uwallet.unet import claim_id_hash, verify_message
+from uwallet.ulord import hash_160_to_bc_address, is_address, decode_claim_id_hex
+from uwallet.ulord import encode_claim_id_hex, encrypt_message, public_key_from_private_key
+from uwallet.ulord import claim_id_hash, verify_message
 from uwallet.base import base_decode
 from uwallet.transaction import Transaction
 from uwallet.transaction import decode_claim_script, deserialize as deserialize_transaction
@@ -828,9 +828,9 @@ class Commands(object):
         if not raw:
             claim_value = claim_result['value']
             try:
-                #import base64
-                # Because I did a base64 encoding when I wrote the transaction -lqp
-                claim_value_decoded = base64.b64decode(claim_value.decode('hex'))       #+
+                
+                # Because I did a base64 encoding when I wrote the transaction --JustinQP
+                claim_value_decoded = base64.b64decode(claim_value.decode('hex'))       
                 decoded = smart_decode(claim_value_decoded.encode('hex'))
                 claim_result['value'] = decoded.claim_dict
                 claim_result['decoded_claim'] = True
@@ -1686,7 +1686,7 @@ class Commands(object):
         # fee is max(relay_fee, size is fee_per_kb * esimated_size)
         # will be roughly 10,000 deweys (0.0001 UT), standard abandon should be about 200 bytes
         # this is assuming config is not set to dynamic, which in case it will get fees from
-        # unets fee estimation algorithm
+        # ulords fee estimation algorithm
 
         size = dummy_tx.estimated_size()
         fee = Transaction.fee_for_size(self.wallet.relayfee(), self.wallet.fee_per_kb(self.config),
@@ -1748,8 +1748,12 @@ class Commands(object):
                                    tx_fee=tx_fee, change_addr=change_addr,
                                    certificate_id=certificate_id, raw=raw,
                                    skip_validate_schema=skip_validate_schema)
+
+        # decode claim value as hex
         if not raw:
             val = val.decode('hex')
+
+        # validate claim and change address if either where given, get least used if not provided
         if claim_addr is None:
             claim_addr = self.wallet.get_least_used_address()
         if not base_decode(claim_addr, ADDRESS_LENGTH, 58):
@@ -1815,8 +1819,14 @@ class Commands(object):
         assert nout is not None
 
         claimid = encode_claim_id_hex(claim_id_hash(rev_hex(tx.hash()).decode('hex'), nout))
-        return {"success": True, "txid": tx.hash(), "nout": nout, "tx": str(tx),
-                "fee": str(Decimal(tx.get_fee()) / COIN), "claim_id": claimid}
+        return {
+			"success": True, 
+			"txid": tx.hash(), 
+			"nout": nout, 
+			"tx": str(tx),
+            "fee": str(Decimal(tx.get_fee()) / COIN), 
+			"claim_id": claimid
+			}
 
     @command('wpn')
     def claimcertificate(self, name, amount, broadcast=True, claim_addr=None, tx_fee=None,
@@ -1869,19 +1879,10 @@ class Commands(object):
             return {'error': 'failed to key signing key for %s' % certificate_id}
         return self._serialize_certificate_key(certificate_id, priv_key)
 
-    @command('wpn')
-    def importcertificateinfo(self, serialized_certificate_info):
-        """
-        Import serialized channel signing information (a claim id to a certificate claim
-        and corresponding private key)
-        """
-
-        certificate_id, signing_key = self._deserialize_certificate_key(serialized_certificate_info)
-
+    def _import_certificate_info(self, certificate_id, signing_key, certificate_claim):
         if self.cansignwithcertificate(certificate_id):
             return {'error': 'refusing to overwrite certificate key already in the wallet',
                     'success': False}
-        certificate_claim = self.getclaimbyid(certificate_id)
         certificate_claim_obj = ClaimDict.load_dict(certificate_claim['value'])
         if not certificate_claim_obj.is_certificate:
             return {'error': 'claim is not a certificate', 'success': False}
@@ -1889,6 +1890,22 @@ class Commands(object):
             return {'error': 'private key does not match certificate', 'success': False}
         self.wallet.save_certificate(certificate_id, signing_key)
         return {'success': True}
+
+    @command('wpn')
+    def importcertificateinfo(self, *serialized_certificate_info):
+        """
+        Import serialized channel infos
+        """
+
+        infos = {}
+        response = {}
+        for info in serialized_certificate_info:
+            certificate_id, signing_key = self._deserialize_certificate_key(info)
+            infos[certificate_id] = signing_key
+        certificate_claims = self.getclaimsbyids(infos.keys())
+        for cert_id, cert_claim in certificate_claims.iteritems():
+            response[cert_id] = self._import_certificate_info(cert_id, infos[cert_id], cert_claim)
+        return response
 
     @command('wpn')
     def updateclaimsignature(self, name, amount=None, claim_id=None, certificate_id=None):
@@ -2490,7 +2507,6 @@ class Commands(object):
 
         Either specify the claim with a claim_id or with txid and nout
         """
-        # claim_id='316b734af2cd3fe13f6ecce5ddb4d9968cfe1611'
         gl.flag_claim = True
         claims = self.getnameclaims(raw=True, include_abandoned=False, include_supports=True,
                                     claim_id=claim_id, txid=txid, nout=nout,
@@ -2517,7 +2533,7 @@ class Commands(object):
         outputs = [(TYPE_ADDRESS, return_addr, txout_value)]
         # fee will be roughly 10,000 deweys (0.0001 UT), standard abandon should be about 200 bytes
         # this is assuming config is not set to dynamic, which in case it will get fees from
-        # unet's fee estimation algorithm
+        # ulord's fee estimation algorithm
 
         fee = self._calculate_fee(inputs, outputs, tx_fee)
         if fee > txout_value:
@@ -2534,67 +2550,6 @@ class Commands(object):
                 return {'success': False, 'reason': out}
         return {'success': True, 'txid': tx.hash(), 'tx': str(tx),
                 'fee': str(Decimal(tx.get_fee()) / COIN)}
-#
-        # claim_id='12096f49550c4052f0510b4f902983b17c76f182'
-        # claims = self.getnameclaims(
-        #     raw=True, claim_id=claim_id, txid=txid, nout=nout,
-        #     skip_validate_signatures=True
-        # )
-        #
-        # if len(claims) > 1:
-        #     return {"success": False, 'reason': 'more than one claim that matches'}
-        # elif len(claims) == 0:
-        #     return {"success": False, 'reason': 'claim not found', 'claim_id': claim_id}
-        # else:
-        #     claim = claims[0]
-        #
-        # try:
-        #     claim_tx = self.wallet.get_spendable_claimtrietx_coin(claim['txid'], claim['nout'])
-        # except BaseException as err:
-        #     return {
-        #         "success": False,
-        #         "reason": "failed to find claim utxo (%s)" % err.message
-        #     }
-        #
-        # if return_addr is None:
-        #     return_addr = self.wallet.get_least_used_address()
-        #
-        # inputs = []
-        # spendable = [claim_tx]
-        # for spendable_coin in self.wallet.get_spendable_coins():
-        #     self.wallet.add_input_info(spendable_coin)
-        #     spendable.append(spendable_coin)
-        #
-        # while spendable:
-        #
-        #     inputs.append(spendable.pop(0))
-        #
-        #     tx = Transaction.from_io(inputs, [(TYPE_ADDRESS, return_addr, 0)])
-        #     fee = tx.estimated_fee(self.wallet.relayfee(), self.wallet.fee_per_kb(self.config))
-        #
-        #     change = tx.input_value() - fee
-        #     if change < 0:
-        #         # input doesn't cover the fee, add more inputs
-        #         continue
-        #
-        #     # final transaction with correct change
-        #     tx = Transaction.from_io(inputs, [(TYPE_ADDRESS, return_addr, change)])
-        #     self.wallet.sign_transaction(tx, self._password)
-        #
-        #     if broadcast:
-        #         success, out = self.wallet.send_tx(tx)
-        #         if not success:
-        #             return {'success': False, 'reason': out}
-        #
-        #     return {
-        #         'success': True,
-        #         'txid': tx.hash(),
-        #         'tx': str(tx),
-        #         'fee': str(Decimal(tx.get_fee()) / COIN)
-        #     }
-        #
-        # # ran out of spendables before 'change' could be greater than 0
-        # return {'success': False, 'reason': 'transaction fee exceeds amount available'}
 
 
 param_descriptions = {

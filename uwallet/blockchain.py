@@ -3,9 +3,9 @@ import urllib
 import socket
 import logging
 import unetschema
-from uwallet import unet
+from uwallet import ulord
 from uwallet.util import hex_to_int, PrintError, int_to_hex, rev_hex
-from uwallet.hashing import hash_encode, Hash,Hash_Header
+from uwallet.hashing import hash_encode, Hash, Hash_Header
 from uwallet.errors import ChainValidationError
 from uwallet.constants import HEADER_SIZE, HEADERS_URL, BLOCKS_PER_CHUNK, NULL_HASH
 from uwallet.constants import blockchain_params
@@ -13,10 +13,10 @@ from uwallet.constants import blockchain_params
 log = logging.getLogger(__name__)
 
  
-class unet(PrintError):
+class Ulord(PrintError):
     """Manages blockchain headers and their verification"""
 
-    BLOCKCHAIN_NAME = "unet_main"
+    BLOCKCHAIN_NAME = "ulord_main"
 
     def __init__(self, config, network):
         self.config = config
@@ -103,15 +103,6 @@ class unet(PrintError):
             + rev_hex(res.get('nonce'))
         return s
 
-    def serialize_header_save(self, res):
-        s = int_to_hex(res.get('version'), 4) \
-            + rev_hex(self.get_block_hash(res)) \
-            + rev_hex(res.get('merkle_root')) \
-            + rev_hex(res.get('claim_trie_root')) \
-            + int_to_hex(int(res.get('timestamp')), 4) \
-            + int_to_hex(int(res.get('bits')), 4) \
-            + rev_hex(res.get('nonce'))
-        return s
 
 
     def deserialize_header(self, s):
@@ -166,7 +157,7 @@ class unet(PrintError):
         self.set_local_height()
 
     def save_header(self, header):
-        data = self.serialize_header_save(header).decode('hex')
+        data = self.serialize_header(header).decode('hex')
         if not len(data) == HEADER_SIZE:
             raise ChainValidationError("Header is wrong size")
         height = header.get('block_height')
@@ -196,17 +187,14 @@ class unet(PrintError):
                 return h
 
     def get_target(self, index, first, last, chain='main'):
-        """
-        this follows the calculations in unet/src
-        Returns: (bits, target)
-        """
+
         if index == 0:
             return self.GENESIS_BITS, self.MAX_TARGET
         assert last is not None, "Last shouldn't be none"
         # bits to target
         bits = last.get('bits')
         # print_error("Last bits: ", bits)
-        #self.check_bits(bits)
+        self.check_bits(bits)
 
         # new target
         nActualTimespan = last.get('timestamp') - first.get('timestamp')
@@ -284,19 +272,19 @@ class unet(PrintError):
             "Second part of bits should be in [0x8000, 0x7fffff] but it was {}".format(bitsBase)
 
 
-class unetTest(unet):
-    BLOCKCHAIN_NAME = "unet_testnet"
+class UlordTest(Ulord):
+    BLOCKCHAIN_NAME = "ulord_testnet"
 
 
-class unetReg(unet):
-    BLOCKCHAIN_NAME = "unet_regtest"
+class UlordReg(Ulord):
+    BLOCKCHAIN_NAME = "ulord_regtest"
 
     def check_bits(self, bits):
         pass
 
 
 def get_blockchain(config, network):
-    chain = config.get('chain', 'unet_main')
+    chain = config.get('chain', 'ulord_main')
 
     # set the script and pubkey address prefixes depending on which chain is being used
     script_address = blockchain_params[chain]['script_address']
@@ -304,20 +292,20 @@ def get_blockchain(config, network):
     pubkey_address = blockchain_params[chain]['pubkey_address']
     pubkey_address_prefix = blockchain_params[chain]['pubkey_address_prefix']
 
-    unet.SCRIPT_ADDRESS = (script_address, script_address_prefix)
-    unet.PUBKEY_ADDRESS = (pubkey_address, pubkey_address_prefix)
+    ulord.SCRIPT_ADDRESS = (script_address, script_address_prefix)
+    ulord.PUBKEY_ADDRESS = (pubkey_address, pubkey_address_prefix)
 
-    if chain == 'unet_main':
-        return unet(config, network)
-    elif chain == 'unet_test':
-        return unetTest(config, network)
-    elif chain == 'unet_regtest':
-        return unetReg(config, network)
+    if chain == 'ulord_main':
+        return Ulord(config, network)
+    elif chain == 'ulrd_test':
+        return UlordTest(config, network)
+    elif chain == 'ulord_regtest':
+        return UlordReg(config, network)
     else:
         raise ValueError('Unknown chain: {}'.format(chain))
 
 
-# see src/arith_uint256.cpp in unet
+
 class ArithUint256(object):
     def __init__(self, value):
         self._value = value

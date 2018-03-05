@@ -417,7 +417,7 @@ class Transaction(object):
             claim_name, claim_value = claim
             script += 'b5'  # op_claim_name
             script += push_script(claim_name.encode('hex'))
-            # In order to solve unet can not resolve Unicode
+            # In order to solve ulord can not resolve ...
             if not gl.flag_claim:
                 claim_value = base64.b64encode(claim_value)
             else:
