@@ -543,7 +543,7 @@ class Commands(object):
         txid = claim['txid']
         nout = claim['nout']
         claim_name = claim['name']
-        claim_val = claim['value']
+        claim_val =  base64_to_json(claim['value']).encode('hex')
         certificate_id = None
         if not skip_validate_schema:
             decoded = smart_decode(claim_val)
@@ -553,6 +553,7 @@ class Commands(object):
                            claim_id=claim_id, txid=txid, nout=nout, broadcast=broadcast,
                            claim_addr=destination, tx_fee=tx_fee, change_addr=change_addr,
                            raw=False, skip_validate_schema=skip_validate_schema)
+
 
     @command('wp')
     def paytomany(self, outputs, tx_fee=None, from_addr=None, change_addr=None, nocheck=False,
@@ -2030,6 +2031,7 @@ class Commands(object):
         except URIParseError as err:
             return {'error': 'Failed to decode URI: %s' % err}
 
+        # val = base64.b64decode(val.decode('hex'))
         if parsed_uri.is_channel:
             if parsed_uri.path:
                 try:
@@ -2193,7 +2195,7 @@ class Commands(object):
 
         :returns formatted claim result
         """
-
+        gl.flag_claim = True
         if skip_validate_schema and certificate_id:
             return {'success': False, 'reason': 'refusing to sign claim without validated schema'}
 
@@ -2489,7 +2491,7 @@ class Commands(object):
         Either specify the claim with a claim_id or with txid and nout
         """
         # claim_id='316b734af2cd3fe13f6ecce5ddb4d9968cfe1611'
-        gl.flag_abandon = True
+        gl.flag_claim = True
         claims = self.getnameclaims(raw=True, include_abandoned=False, include_supports=True,
                                     claim_id=claim_id, txid=txid, nout=nout,
                                     skip_validate_signatures=True)
@@ -2685,6 +2687,10 @@ def json_loads(x):
     """don't use floats because of rounding errors"""
     return json.loads(x, parse_float=lambda x: str(Decimal(x)))
 
+def base64_to_json(claimvalue):
+    """base64 to json"""
+    value = base64.b64decode(claimvalue.decode('hex'))
+    return value
 
 arg_types = {
     'num': int,
