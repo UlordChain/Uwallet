@@ -35,11 +35,11 @@ blockchain_params = {
     'ulord_main': {
         'pubkey_address': 0,
         'script_address': 5,
-        'pubkey_address_prefix': 68,
-        'script_address_prefix': 63,
-        'genesis_hash': '000000e32e974118821c865e0f79cd851edd96ccdf161de997ee85c438d0e7e3',
-        'max_target': 0x00001d1459000000000000000000000000000000000000000000000000000000,
-        'genesis_bits': 0x1e1d1459,
+        'pubkey_address_prefix': 130,
+        'script_address_prefix': 125,
+        'genesis_hash': '000e0979b2a26db104fb4d8c2c8d572919a56662cecdcadc3d0583ac8d548e23',
+        'max_target': 0x000fffffff000000000000000000000000000000000000000000000000000000,
+        'genesis_bits': 0x1f0fffff,
         'target_timespan': 150 
     },
     'ulord_test': {

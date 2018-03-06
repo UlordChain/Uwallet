@@ -30,7 +30,7 @@ DEFAULT_CONFIG = {
     'default_servers': {
         '47.75.4.172': {'t': '50001'},
     },
-    'chain': 'ulord_test'
+    'chain': 'ulord_main'
 }
 
 
