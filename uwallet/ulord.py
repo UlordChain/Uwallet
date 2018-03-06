@@ -24,8 +24,8 @@ log = logging.getLogger(__name__)
 # the default values are for ulord_main
 global PUBKEY_ADDRESS
 global SCRIPT_ADDRESS
-PUBKEY_ADDRESS = (0, 68)
-SCRIPT_ADDRESS = (5, 63)
+PUBKEY_ADDRESS = (0, 130)
+SCRIPT_ADDRESS = (5, 125)
 
 # AES encryption
 EncodeAES = lambda secret, s: base64.b64encode(aes.encryptData(secret, s))

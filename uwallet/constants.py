@@ -47,9 +47,9 @@ blockchain_params = {
         'script_address': 5,
         'pubkey_address_prefix': 130,
         'script_address_prefix': 125,
-        'genesis_hash': '04994b3eaeed96e070107823dfa796d5d45246e72ed838054780b4e6de455971',
-        'max_target': 0x07FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF,
-        'genesis_bits': 0x2007ffff,
+        'genesis_hash': '000e0979b2a26db104fb4d8c2c8d572919a56662cecdcadc3d0583ac8d548e23',
+        'max_target': 0x000fffffff000000000000000000000000000000000000000000000000000000,
+        'genesis_bits': 0x1f0fffff,
         'target_timespan': 150
     },
     'ulord_regtest': {
