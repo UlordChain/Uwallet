@@ -24,6 +24,7 @@ log = logging.getLogger(__name__)
 # the default values are for ulord_main
 global PUBKEY_ADDRESS
 global SCRIPT_ADDRESS
+
 PUBKEY_ADDRESS = (0, 130)
 SCRIPT_ADDRESS = (5, 125)
 
