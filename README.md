@@ -1,4 +1,4 @@
-# unet Wallet Command client
+# Ulord Wallet Command client
 
 ### To install uwallet, run the following from this directory (use of a virtualenv is recommended):
 
