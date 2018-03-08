@@ -1267,7 +1267,7 @@ class Commands(object):
     @command('n')
     def getvalueforuri(self, uri, raw=False, page=0, page_size=10):
         """
-        Resolve a UT URI
+        Resolve a ULD URI
         """
 
         result = self.getvaluesforuris(raw, page, page_size, uri)
@@ -1278,7 +1278,7 @@ class Commands(object):
     @command('n')
     def getvaluesforuris(self, raw=False, page=0, page_size=10, *uris):
         """
-        Resolve a UT URI
+        Resolve a ULD URI
         """
 
         page = int(page)

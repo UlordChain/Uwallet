@@ -297,7 +297,7 @@ def get_blockchain(config, network):
 
     if chain == 'ulord_main':
         return Ulord(config, network)
-    elif chain == 'ulrd_test':
+    elif chain == 'ulord_test':
         return UlordTest(config, network)
     elif chain == 'ulord_regtest':
         return UlordReg(config, network)
