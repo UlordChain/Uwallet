@@ -543,7 +543,8 @@ class Commands(object):
         txid = claim['txid']
         nout = claim['nout']
         claim_name = claim['name']
-        claim_val =  base64_to_json(claim['value']).encode('hex')
+        claim_val = claim['value']
+        # claim_val =  base64_to_json(claim['value']).encode('hex')
         certificate_id = None
         if not skip_validate_schema:
             decoded = smart_decode(claim_val)
@@ -830,8 +831,9 @@ class Commands(object):
             try:
                 
                 # Because I did a base64 encoding when I wrote the transaction --JustinQP
-                claim_value_decoded = base64.b64decode(claim_value.decode('hex'))       
-                decoded = smart_decode(claim_value_decoded.encode('hex'))
+                # claim_value_decoded = base64.b64decode(claim_value.decode('hex'))       
+                # decoded = smart_decode(claim_value_decoded.encode('hex'))
+                decoded = smart_decode(claim_value)
                 claim_result['value'] = decoded.claim_dict
                 claim_result['decoded_claim'] = True
             except DecodeError:
@@ -1700,8 +1702,9 @@ class Commands(object):
         """
 
         try:
-            claim_value_decoded = base64.b64decode(val.decode('hex'))
-            decoded = smart_decode(claim_value_decoded)
+            # claim_value_decoded = base64.b64decode(val.decode('hex'))
+            # decoded = smart_decode(claim_value_decoded)
+            decoded = smart_decode(val)
             results = {'claim_dictionary': decoded.claim_dict,
                        'serialized': decoded.serialized.encode('hex')}
             return results
@@ -2212,7 +2215,7 @@ class Commands(object):
 
         :returns formatted claim result
         """
-        gl.flag_claim = True
+        #gl.flag_claim = True
         if skip_validate_schema and certificate_id:
             return {'success': False, 'reason': 'refusing to sign claim without validated schema'}
 
@@ -2507,7 +2510,7 @@ class Commands(object):
 
         Either specify the claim with a claim_id or with txid and nout
         """
-        gl.flag_claim = True
+        # gl.flag_claim = True
         claims = self.getnameclaims(raw=True, include_abandoned=False, include_supports=True,
                                     claim_id=claim_id, txid=txid, nout=nout,
                                     skip_validate_signatures=True)
