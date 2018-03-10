@@ -8,9 +8,10 @@ class TestBaseAddr(unittest.TestCase):
         self._addr = "uge36eCzRfG5MKDsNhPgFk13UbJZgeN3ty"
         self._privk = "L2hzM95TB9fHU3RNCkQXSqsTBSfzZeS5FaGq2ZeModXjzB4UqF9F"
 
-class TestAddr(TestBaseAddr):
+
+class TestTestNetAddress(TestBaseAddr):
     """Test address"""
-    def test_testnet_pubkey_to_addr(self):
+    def test_pubkey_to_addr(self):
         """Test pubkey to address """
         pubkey = self._pubk.decode("hex")
         result = public_key_to_bc_address(pubkey)
@@ -32,3 +33,6 @@ class TestAddr(TestBaseAddr):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+
