@@ -39,14 +39,6 @@ def PowHash(x):
     return sha256(sha256(x))
 
 
-#def PoWHash(x):
-#    if type(x) is unicode:
-#        x = x.encode('utf-8')
-#    r = sha512(Hash(x))
-#    r1 = ripemd160(r[:len(r) / 2])
-#    r2 = ripemd160(r[len(r) / 2:])
-#    r3 = Hash(r1 + r2)
-#    return r3
 
 
 def hash_encode(x):

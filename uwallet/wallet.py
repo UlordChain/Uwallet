@@ -15,7 +15,7 @@ from decimal import Decimal
 from functools import partial
 from unicodedata import normalize
 
-from uwallet import __version__ as uwallet_VERSION
+from uwallet import __version__ as UWALLET_VERSION
 from uwallet.account import ImportedAccount, Multisig_Account, BIP32_Account
 from uwallet.constants import TYPE_ADDRESS, TYPE_CLAIM, TYPE_SUPPORT, TYPE_UPDATE, TYPE_PUBKEY
 from uwallet.constants import EXPIRATION_BLOCKS, COINBASE_MATURITY, RECOMMENDED_FEE
@@ -27,11 +27,11 @@ from uwallet.util import PrintError, profiler, rev_hex
 from uwallet.errors import NotEnoughFunds, InvalidPassword
 from uwallet.verifier import SPV
 from uwallet.version import NEW_SEED_VERSION
-from uwallet.unet import regenerate_key, is_address, is_compressed, pw_encode, pw_decode
-from uwallet.unet import is_new_seed, hash_160_to_bc_address, xpub_from_xprv, bip32_private_key
-from uwallet.unet import encode_claim_id_hex, deserialize_xkey, claim_id_hash, is_private_key
-from uwallet.unet import public_key_from_private_key, public_key_to_bc_address
-from uwallet.unet import bip32_public_derivation, bip32_private_derivation, bip32_root
+from uwallet.ulord import regenerate_key, is_address, is_compressed, pw_encode, pw_decode
+from uwallet.ulord import is_new_seed, hash_160_to_bc_address, xpub_from_xprv, bip32_private_key
+from uwallet.ulord import encode_claim_id_hex, deserialize_xkey, claim_id_hash, is_private_key
+from uwallet.ulord import public_key_from_private_key, public_key_to_bc_address
+from uwallet.ulord import bip32_public_derivation, bip32_private_derivation, bip32_root
 
 log = logging.getLogger(__name__)
 # internal ID for imported account
@@ -144,7 +144,7 @@ class Abstract_Wallet(PrintError):
     def __init__(self, storage):
         self.storage = storage
         self.network = None
-        self.electrum_version = uwallet_VERSION
+        self.electrum_version = UWALLET_VERSION
         self.gap_limit_for_change = 6  # constant
         # saved fields
         self.seed_version = storage.get('seed_version', NEW_SEED_VERSION)
@@ -1122,7 +1122,7 @@ class Abstract_Wallet(PrintError):
 
         # Avoid index-out-of-range with coins[0] below
         if not coins:
-            raise  NotEnoughFunds()
+            raise NotEnoughFunds()
 
         for item in coins:
             self.add_input_info(item)

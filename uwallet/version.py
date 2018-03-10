@@ -1,6 +1,6 @@
 from uwallet import __version__
 
-uwallet_VERSION = __version__
+UWALLET_VERSION = __version__
 PROTOCOL_VERSION = '0.10'   # protocol version requested
 NEW_SEED_VERSION = 11       # uwallet versions >= 2.0
 OLD_SEED_VERSION = 4        # uwallet versions < 2.0

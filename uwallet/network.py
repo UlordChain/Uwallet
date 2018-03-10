@@ -10,7 +10,7 @@ import time
 from collections import defaultdict, deque
 from threading import Lock
 
-from uwallet import __version__ as uwallet_VERSION
+from uwallet import __version__ as UWALLET_VERSION
 from uwallet.constants import COIN, BLOCKS_PER_CHUNK, DEFAULT_PORTS, proxy_modes
 from uwallet.constants import SERVER_RETRY_INTERVAL, NODES_RETRY_INTERVAL
 from uwallet.util import DaemonThread, normalize_version
@@ -461,7 +461,6 @@ class Network(DaemonThread):
         return str(method) + (':' + str(params[0]) if params else '')
 
     def process_responses(self, interface):
-        #return the result from net
         responses = interface.get_responses()
         for request, response in responses:
             if request:
@@ -583,7 +582,7 @@ class Network(DaemonThread):
             if interface.has_timed_out():
                 self.connection_down(interface.server)
             elif interface.ping_required():
-                params = [uwallet_VERSION, PROTOCOL_VERSION]
+                params = [UWALLET_VERSION, PROTOCOL_VERSION]
                 self.queue_request('server.version', params, interface)
 
         now = time.time()

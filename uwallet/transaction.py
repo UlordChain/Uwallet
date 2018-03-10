@@ -10,9 +10,9 @@ from uwallet.constants import TYPE_ADDRESS, NO_SIGNATURE
 from uwallet.opcodes import opcodes, match_decoded, script_GetOp
 from uwallet.bcd_data_stream import BCDataStream
 from uwallet.hashing import Hash, hash_160, hash_encode
-from uwallet.unet import hash_160_to_bc_address, bc_address_to_hash_160, op_push
-from uwallet.unet import address_from_private_key, point_to_ser, MyVerifyingKey, MySigningKey
-from uwallet.unet import public_key_to_bc_address, regenerate_key, public_key_from_private_key
+from uwallet.ulord import hash_160_to_bc_address, bc_address_to_hash_160, op_push
+from uwallet.ulord import address_from_private_key, point_to_ser, MyVerifyingKey, MySigningKey
+from uwallet.ulord import public_key_to_bc_address, regenerate_key, public_key_from_private_key
 from uwallet.util import print_error, profiler, var_int, int_to_hex, parse_sig
 from uwallet import gl
 
@@ -417,7 +417,7 @@ class Transaction(object):
             claim_name, claim_value = claim
             script += 'b5'  # op_claim_name
             script += push_script(claim_name.encode('hex'))
-            # In order to solve unet can not resolve Unicode
+            # In order to solve ulord can not resolve ...
             if not gl.flag_claim:
                 claim_value = base64.b64encode(claim_value)
             else:

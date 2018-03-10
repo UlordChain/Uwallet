@@ -49,7 +49,7 @@ setup(
     entry_points={'console_scripts': console_scripts},
     description="Lightweight ulord Wallet",
     author="UT Inc.",
-    author_email="qiping@ulord.io",
+    author_email="JustinQP007@gmail.com",
     license="GNU GPLv3",
     url="http://ulord.one/",
     long_description="""Lightweight ulord Wallet""",

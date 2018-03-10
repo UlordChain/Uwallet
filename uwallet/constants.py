@@ -23,36 +23,36 @@ BLOCKS_PER_CHUNK = 96   #1d / 150s
 #TODO add it. --JustinQP
 HEADERS_URL = "" 
 
-DEFAULT_PORTS = {'t': '10579', 's': '50002', 'h': '8081', 'g': '8082'}
+DEFAULT_PORTS = {'t': '50001', 's': '50002', 'h': '8081', 'g': '8082'}
 NODES_RETRY_INTERVAL = 60
 SERVER_RETRY_INTERVAL = 10
 MAX_BATCH_QUERY_SIZE = 500
 proxy_modes = ['socks4', 'socks5', 'http']
 
 # Main network and testnet3 definitions
-# these values follow the parameters in unet/src/chainparams.cpp
+# these values follow the parameters in ulord/src/chainparams.cpp
 blockchain_params = {
-    'unet_main': {
-        'pubkey_address': 0,
-        'script_address': 5,
-        'pubkey_address_prefix': 68,
-        'script_address_prefix': 63,
-        'genesis_hash': '000000e32e974118821c865e0f79cd851edd96ccdf161de997ee85c438d0e7e3',
-        'max_target': 0x00001d1459000000000000000000000000000000000000000000000000000000,
-        'genesis_bits': 0x1e1d1459,
-        'target_timespan': 150 
-    },
-    'unet_test': {
+    'ulord_main': {
         'pubkey_address': 0,
         'script_address': 5,
         'pubkey_address_prefix': 130,
         'script_address_prefix': 125,
-        'genesis_hash': '04994b3eaeed96e070107823dfa796d5d45246e72ed838054780b4e6de455971',
-        'max_target': 0x07FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF,
-        'genesis_bits': 0x2007ffff,
+        'genesis_hash': '000e0979b2a26db104fb4d8c2c8d572919a56662cecdcadc3d0583ac8d548e23',
+        'max_target': 0x000fffffff000000000000000000000000000000000000000000000000000000,
+        'genesis_bits': 0x1f0fffff,
+        'target_timespan': 150 
+    },
+    'ulord_test': {
+        'pubkey_address': 0,
+        'script_address': 5,
+        'pubkey_address_prefix': 130,
+        'script_address_prefix': 125,
+        'genesis_hash': '000e0979b2a26db104fb4d8c2c8d572919a56662cecdcadc3d0583ac8d548e23',
+        'max_target': 0x000fffffff000000000000000000000000000000000000000000000000000000,
+        'genesis_bits': 0x1f0fffff,
         'target_timespan': 150
     },
-    'unet_regtest': {
+    'ulord_regtest': {
         'pubkey_address': 0,
         'script_address': 5,
         'pubkey_address_prefix': 140,
