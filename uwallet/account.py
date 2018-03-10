@@ -4,9 +4,9 @@ from uwallet.util import rev_hex, int_to_hex, is_extended_pubkey
 from uwallet.hashing import hash_160
 from uwallet.base import DecodeBase58Check, EncodeBase58Check
 from uwallet.transaction import Transaction
-from uwallet.unet import pw_decode, pw_encode, hash_160_to_bc_address, address_from_private_key
-from uwallet.unet import public_key_to_bc_address, deserialize_xkey, bip32_public_derivation
-from uwallet.unet import CKD_pub, bip32_private_key
+from uwallet.ulord import pw_decode, pw_encode, hash_160_to_bc_address, address_from_private_key
+from uwallet.ulord import public_key_to_bc_address, deserialize_xkey, bip32_public_derivation
+from uwallet.ulord import CKD_pub, bip32_private_key
 from uwallet.errors import InvalidPassword
 
 log = logging.getLogger(__name__)

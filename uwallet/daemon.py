@@ -105,7 +105,7 @@ class Daemon(DaemonThread):
                     wallet.start_threads(self.network)
             else:
                 wallet = Wallet(storage)
-                # automatically generate wallet for unet
+                # automatically generate wallet for ulord
                 if not storage.file_exists:
                     seed = wallet.make_seed()
                     wallet.add_seed(seed, None)

@@ -1,6 +1,6 @@
 import re
 
-from uwallet.unet import is_address
+from uwallet.ulord import is_address
 from uwallet.store import StoreDict
 
 
