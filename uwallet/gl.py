@@ -10,4 +10,4 @@
     2. transaction.pay_script
     3. commands.update
 """
-flag_claim = False
+gl.NEED_MODIFY_CLAIM = False

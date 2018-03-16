@@ -2212,7 +2212,7 @@ class Commands(object):
 
         :returns formatted claim result
         """
-        gl.flag_claim = True
+        gl.NEED_MODIFY_CLAIM = True
         if skip_validate_schema and certificate_id:
             return {'success': False, 'reason': 'refusing to sign claim without validated schema'}
 
@@ -2315,6 +2315,7 @@ class Commands(object):
 
         tx = Transaction.from_io(inputs, outputs)
         self.wallet.sign_transaction(tx, self._password)
+        gl.NEED_MODIFY_CLAIM = False
         if broadcast:
             success, out = self.wallet.send_tx(tx)
             if not success:
@@ -2507,7 +2508,7 @@ class Commands(object):
 
         Either specify the claim with a claim_id or with txid and nout
         """
-        gl.flag_claim = True
+        gl.NEED_MODIFY_CLAIM = True
         claims = self.getnameclaims(raw=True, include_abandoned=False, include_supports=True,
                                     claim_id=claim_id, txid=txid, nout=nout,
                                     skip_validate_signatures=True)
@@ -2539,11 +2540,11 @@ class Commands(object):
         if fee > txout_value:
             return {'success': False, 'reason': 'transaction fee exceeds amount to abandon'}
         return_value = txout_value - fee
-
         # create transaction
         outputs = [(TYPE_ADDRESS, return_addr, return_value)]
         tx = Transaction.from_io(inputs, outputs)
         self.wallet.sign_transaction(tx, self._password)
+        gl.NEED_MODIFY_CLAIM = False
         if broadcast:
             success, out = self.wallet.send_tx(tx)
             if not success:
