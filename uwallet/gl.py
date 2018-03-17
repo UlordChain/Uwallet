@@ -10,4 +10,5 @@
     2. transaction.pay_script
     3. commands.update
 """
-gl.NEED_MODIFY_CLAIM = False
+NEED_MODIFY_CLAIM = False
+
