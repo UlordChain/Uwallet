@@ -28,7 +28,7 @@ def set_config(c):
 #TODO: modifi ip 
 DEFAULT_CONFIG = {
     'default_servers': {
-        '10.175.0.169': {'t': '50001'},
+        '192.168.14.253': {'t': '50001'},
     },
     'chain': 'ulord_main'
 }

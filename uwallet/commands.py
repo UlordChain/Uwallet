@@ -485,6 +485,11 @@ class Commands(object):
         return tx
 
     @command('wp')
+    def getnewaddress(self):
+        """Get a new receive address."""
+        return self.wallet.create_new_address()
+
+    @command('wp')
     def getunusedaddress(self, account=None):
         addr = self.wallet.get_unused_address(account)
         if addr is None:
