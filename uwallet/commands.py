@@ -491,8 +491,9 @@ class Commands(object):
             addr = self.wallet.create_new_address()
         return addr
 
-    @command('w')
+    @command('wp')
     def getnewaddress(self):
+        """Get a new receive address."""
         return self.wallet.create_new_address()
 
     @command('wp')
