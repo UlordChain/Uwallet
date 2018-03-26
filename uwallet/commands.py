@@ -491,6 +491,10 @@ class Commands(object):
             addr = self.wallet.create_new_address()
         return addr
 
+    @command('w')
+    def getnewaddress(self):
+        return self.wallet.create_new_address()
+
     @command('wp')
     def getleastusedchangeaddress(self, account=None):
         return self.wallet.get_least_used_address(account, for_change=True)
