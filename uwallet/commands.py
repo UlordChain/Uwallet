@@ -515,6 +515,17 @@ class Commands(object):
         tx = self._mktx([(destination, amount)], tx_fee, change_addr, domain, nocheck, unsigned)
         return self.network.synchronous_get(('blockchain.transaction.broadcast', [str(tx)]))
 
+    @command('wpn')
+    def testpaytoandsend(self, destination, amount, tx_fee=None, from_addr=None, change_addr=None,
+                     nocheck=False, unsigned=False):
+        """The purpose is to test generate txid. --JustinQP """
+        domain = [from_addr] if from_addr else None
+        tx = self._mktx([(destination, amount)], tx_fee, change_addr, domain, nocheck, unsigned)
+        self.network.synchronous_get(('blockchain.transaction.broadcast', [str(tx)]))
+        raw = str(tx)
+        tx_double_hash = sha256(sha256(raw))
+        return  tx_double_hash[::-1].encode('hex')
+
     @command('w')
     def waitfortxinwallet(self, txid, timeout=30):
         """
