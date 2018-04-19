@@ -10,6 +10,12 @@ TYPE_CLAIM = 8
 TYPE_SUPPORT = 16
 TYPE_UPDATE = 32
 
+
+# The cost of binding resources,it a minimum currency unit.--Justin
+BINDING_FEE = 1
+PLATFORM_ADDRESS = "uR2NcaKGoD5Ktqs8eUdeeCDY3pFX8saoMB"
+
+
 # claim related constants
 EXPIRATION_BLOCKS = 262974
 RECOMMENDED_CLAIMTRIE_HASH_CONFIRMS = 1
