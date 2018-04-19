@@ -12,7 +12,7 @@ TYPE_UPDATE = 32
 
 
 # The cost of binding resources,it a minimum currency unit.--Justin
-BINDING_FEE = 1
+BINDING_FEE = 10000
 PLATFORM_ADDRESS = "uR2NcaKGoD5Ktqs8eUdeeCDY3pFX8saoMB"
 
 

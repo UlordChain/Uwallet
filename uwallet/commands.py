@@ -1731,7 +1731,7 @@ class Commands(object):
             return {'error': err}
 
     @command('wpn')
-    def claim(self, name, val, amount, certificate_id=None, broadcast=True, claim_addr=None,
+    def claim(self, name, val, amount=1, certificate_id=None, broadcast=True, claim_addr=None,
               tx_fee=None, change_addr=None, raw=False, skip_validate_schema=None,
               skip_update_check=None):
         """
