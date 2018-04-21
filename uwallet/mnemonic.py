@@ -28,7 +28,7 @@ import ecdsa
 import pbkdf2
 
 from uwallet import version
-from uwallet.ulord import is_new_seed
+from uwallet.hashing import hmac_sha_512
 
 log = logging.getLogger(__name__)
 
@@ -167,3 +167,8 @@ class Mnemonic(object):
                 break
         log.info('%d words', len(seed.split()))
         return seed
+
+def is_new_seed(x, prefix=version.SEED_PREFIX):
+    x = prepare_seed(x)
+    s = hmac_sha_512("Seed version", x.encode('utf8')).encode('hex')
+    return s.startswith(prefix)
