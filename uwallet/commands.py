@@ -22,6 +22,7 @@ from uwallet import __version__
 from uwallet.contacts import Contacts
 from uwallet.constants import COIN, TYPE_ADDRESS, TYPE_CLAIM, TYPE_SUPPORT, TYPE_UPDATE
 from uwallet.constants import RECOMMENDED_CLAIMTRIE_HASH_CONFIRMS, MAX_BATCH_QUERY_SIZE
+from uwallet.constants import MAX_TRANSFER_FEE,MIN_TRANSFER_FEE
 from uwallet.constants import BINDING_FEE, PLATFORM_ADDRESS
 from uwallet.hashing import Hash, hash_160
 from uwallet.claims import verify_proof
@@ -32,7 +33,7 @@ from uwallet.base import base_decode
 from uwallet.transaction import Transaction
 from uwallet.transaction import decode_claim_script, deserialize as deserialize_transaction
 from uwallet.transaction import get_address_from_output_script, script_GetOp
-from uwallet.errors import InvalidProofError, NotEnoughFunds
+from uwallet.errors import InvalidProofError, NotEnoughFunds, InvalidTtransferFee
 from uwallet.util import format_satoshis, rev_hex
 from uwallet.mnemonic import Mnemonic
 
@@ -456,6 +457,10 @@ class Commands(object):
                     dummy_tx = Transaction.from_io(inputs, [output])
                     fee_per_kb = self.wallet.fee_per_kb(self.config)
                     fee = dummy_tx.estimated_fee(self.wallet.relayfee(), fee_per_kb)
+                    if fee >= MAX_TRANSFER_FEE:
+                        print "There is too much data for a single transaction, exceeding the maximum limit.\
+                              Please integrate fragmented UTXO first."
+                        raise InvalidTtransferFee
                 amount -= fee
             else:
                 amount = int(COIN * Decimal(amount))
