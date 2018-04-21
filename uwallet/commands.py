@@ -109,6 +109,7 @@ class Commands(object):
         self.contacts = Contacts(self.config)
 
     def _run(self, method, args, password_getter):
+        print "debug:Is this function running? "
         cmd = known_commands[method]
         if cmd.requires_password and self.wallet.use_encryption:
             self._password = apply(password_getter, ())
