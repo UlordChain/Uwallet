@@ -107,6 +107,10 @@ class WalletStorage(PrintError):
                 self.data.pop(key)
 
     def write(self):
+        with self.lock:
+            self._write()
+
+    def _write(self):
         if threading.currentThread().isDaemon():
             log.warning('daemon thread cannot write wallet')
             return
@@ -1321,8 +1325,11 @@ class Abstract_Wallet(PrintError):
     def stop_threads(self):
         if self.network:
             self.network.remove_jobs([self.synchronizer, self.verifier])
-            self.synchronizer.release()
-            self.synchronizer = None
+            if self.synchronizer:
+                self.synchronizer.release()
+                self.synchronizer = None
+            else:
+                log.warning("Synchronizer alread released.")
             self.verifier = None
             # Now no references to the syncronizer or verifier
             # remain so they will be GC-ed
