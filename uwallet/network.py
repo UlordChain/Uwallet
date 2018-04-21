@@ -12,7 +12,7 @@ from threading import Lock
 
 from uwallet import __version__ as UWALLET_VERSION
 from uwallet.constants import COIN, BLOCKS_PER_CHUNK, DEFAULT_PORTS, proxy_modes
-from uwallet.constants import SERVER_RETRY_INTERVAL, NODES_RETRY_INTERVAL
+from uwallet.constants import SERVER_RETRY_INTERVAL, NODES_RETRY_INTERVAL,NETWORK_TIMEOUT
 from uwallet.util import DaemonThread, normalize_version
 from uwallet.blockchain import get_blockchain
 from uwallet.interface import Connection, Interface
@@ -710,13 +710,17 @@ class Network(DaemonThread):
             return
         rin = [i for i in self.interfaces.values()]
         win = [i for i in self.interfaces.values() if i.unsent_requests]
+        failed_flag = False
         try:
             rout, wout, xout = select.select(rin, win, [], 0.2)
-        except socket.error as (code, msg):
+        except select.error as (code, msg):
             if code == errno.EINTR:
                 return
-            raise
-        assert not xout
+            failed_flag = True
+        if failed_flag or xout:
+            for interface in self.interfaces.values():
+                self.connection_down(interface.server)
+            return
         for interface in wout:
             interface.send_requests()
         for interface in rout:
@@ -770,7 +774,7 @@ class Network(DaemonThread):
         else:
             return 0
 
-    def synchronous_get(self, request, timeout=30):
+    def synchronous_get(self, request, timeout=NETWORK_TIMEOUT):
         queue = Queue.Queue()
         self.send([request], queue.put)
         try:

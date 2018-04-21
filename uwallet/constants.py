@@ -33,6 +33,7 @@ DEFAULT_PORTS = {'t': '50001', 's': '50002', 'h': '8081', 'g': '8082'}
 NODES_RETRY_INTERVAL = 60
 SERVER_RETRY_INTERVAL = 10
 MAX_BATCH_QUERY_SIZE = 500
+NETWORK_TIMEOUT = 45
 proxy_modes = ['socks4', 'socks5', 'http']
 
 # Main network and testnet3 definitions
