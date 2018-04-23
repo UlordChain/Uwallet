@@ -2351,7 +2351,6 @@ class Commands(object):
 
         tx = Transaction.from_io(inputs, outputs)
         self.wallet.sign_transaction(tx, self._password)
-        gl.NEED_MODIFY_CLAIM = False
         if broadcast:
             success, out = self.wallet.send_tx(tx)
             if not success:
@@ -2580,7 +2579,6 @@ class Commands(object):
         outputs = [(TYPE_ADDRESS, return_addr, return_value)]
         tx = Transaction.from_io(inputs, outputs)
         self.wallet.sign_transaction(tx, self._password)
-        gl.NEED_MODIFY_CLAIM = False
         if broadcast:
             success, out = self.wallet.send_tx(tx)
             if not success:

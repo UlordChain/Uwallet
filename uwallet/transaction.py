@@ -417,11 +417,6 @@ class Transaction(object):
             claim_name, claim_value = claim
             script += 'b5'  # op_claim_name
             script += push_script(claim_name.encode('hex'))
-            # In order to solve ulord can not resolve ...
-            #if not gl.flag_claim:
-            #    claim_value = base64.b64encode(claim_value)
-            #else:
-            #    gl.flag_abandon = False
             script += push_script(claim_value.encode('hex'))
             script += '6d75'  # op_2drop, op_drop
         elif output_type & TYPE_SUPPORT:
@@ -437,7 +432,6 @@ class Transaction(object):
             script += 'b7'
             script += push_script(claim_name.encode('hex'))
             script += push_script(claim_id.encode('hex'))
-            #claim_value=base64.b64encode(claim_value)           #+
             script += push_script(claim_value.encode('hex'))
             script += '6d6d'
 
