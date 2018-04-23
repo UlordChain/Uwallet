@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 import logging
 from threading import Lock
 
@@ -77,9 +78,7 @@ class Synchronizer(ThreadJob):
         if not params:
             return
         addr = params[0]
-        if addr not in self.requested_histories:
-            self.print_error("Received unsolicited or already processed address history", addr, result)
-            return
+        # self.print_error("receiving history", addr, result)
         server_status = self.requested_histories[addr]
         hashes = set(map(lambda item: item['tx_hash'], result))
         hist = map(lambda item: (item['tx_hash'], item['height']), result)

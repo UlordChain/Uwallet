@@ -1,7 +1,9 @@
+#-*- coding: UTF-8 -*-
 import json
 import logging
 import os
 import sys
+from time import time
 
 import requests
 from uwallet.commands import Commands, config_variables, get_parser, known_commands
@@ -10,8 +12,7 @@ from uwallet.network import Network, SimpleConfig
 from uwallet.util import json_decode
 from uwallet.errors import InvalidPassword
 from uwallet.wallet import Wallet, WalletStorage
-
-log = logging.getLogger(__name__)
+log = logging.getLogger("uwallet")
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 is_bundle = getattr(sys, 'frozen', False)
@@ -33,7 +34,8 @@ def prompt_password(prompt, confirm=True):
 def run_non_RPC(config):
     cmdname = config.get('cmd')
     client = config.get('client')
-    storage = WalletStorage(config.get_wallet_path())
+    user = config.get('user')
+    storage = WalletStorage(config.get_wallet_path() + '//'+ user)
 
     if storage.file_exists:
         sys.exit("Error: Remove the existing wallet first!")
@@ -109,6 +111,7 @@ def init_cmdline(config_options):
     config = SimpleConfig(config_options)
     client = config.get('client', None)
     cmdname = config.get('cmd')
+    user = config.get('user')
     cmd = known_commands[cmdname]
 
     if cmdname == 'signtransaction' and config.get('privkey'):
@@ -126,7 +129,11 @@ def init_cmdline(config_options):
         cmd.requires_wallet = False
 
     # instanciate wallet for command-line
-    storage = WalletStorage(config.get_wallet_path())
+    if user != None:
+        storage = WalletStorage(config.get_wallet_path() + '//'+ user)
+
+    else:
+        storage = WalletStorage(config.get_wallet_path())
 
     if cmd.requires_wallet and not storage.file_exists:
         log.error("Error: Wallet file not found.")
@@ -168,8 +175,10 @@ def init_cmdline(config_options):
 
 def run_offline_command(config, config_options):
     cmdname = config.get('cmd')
+    user = config.get('user')
+    print user
     cmd = known_commands[cmdname]
-    storage = WalletStorage(config.get_wallet_path())
+    storage = WalletStorage(config.get_wallet_path() + '//'+ user)
     wallet = Wallet(storage) if cmd.requires_wallet else None
     # check password
     if cmd.requires_password and storage.get('use_encryption'):
@@ -179,15 +188,19 @@ def run_offline_command(config, config_options):
         except InvalidPassword:
             print "Error: This password does not decode this wallet."
             sys.exit(1)
-    if cmd.requires_network:
-        print "Warning: running command offline"
+    # 此处没有必要 --hetao
+    # if cmd.requires_network:
+    #     print "Warning: running command offline"
+
     # arguments passed to function
     args = map(lambda x: config.get(x), cmd.params)
     # decode json arguments
     args = map(json_decode, args)
     # options
     args += map(lambda x: config.get(x), cmd.options)
-    cmd_runner = Commands(config, wallet, None, password=config_options.get('password'),
+    wallets = {}
+    wallets[user] = wallet
+    cmd_runner = Commands(config, wallets, None, password=config_options.get('password'),
                           new_password=config_options.get('new_password'))
     func = getattr(cmd_runner, cmd.name)
     result = func(*args)
@@ -239,16 +252,17 @@ def main():
     for k, v in config_options.items():
         if v is None or (k in config_variables.get(args.cmd, {}).keys()):
             config_options.pop(k)
+    # todo: 这里有何意义 --hetao
     if config_options.get('server'):
         config_options['auto_connect'] = False
 
     config = SimpleConfig(config_options)
     cmdname = config.get('cmd')
     client = config.get('client')
-
+    user = config.get('user')
     # Determine whether a wallet exists
     if cmdname == 'haswallet':
-        storage = WalletStorage(config.get_wallet_path())
+        storage = WalletStorage(config.get_wallet_path() + '//'+ user)
         # Run the command with the Gui
         if client is True:
             if storage.file_exists:
@@ -262,7 +276,7 @@ def main():
                 sys.exit("The wallet not exists")
 
     if cmdname == 'haspassword':
-        storage = WalletStorage(config.get_wallet_path())
+        storage = WalletStorage(config.get_wallet_path()+ '//'+ user)
         # Run the command with the Gui
         if client is True:
             if storage.get('use_encryption'):
@@ -310,7 +324,8 @@ def main():
                     sys.exit(1)
             elif subcommand == 'start':
                 if hasattr(os, "fork"):
-                    p = os.fork()
+                    # p = os.fork()
+                    p = 0
                 else:
                     log.warning("Cannot start uwallet daemon as a background process")
                     log.warning("To use uwallet commands, run them from a different window")
@@ -319,7 +334,9 @@ def main():
                     network = Network(config)
                     network.start()
                     daemon = Daemon(config, network)
+                    # daemon.runProc()
                     daemon.start()
+                    daemon.server.serve_forever()
                     if client is not True:
                         daemon.join()
                         sys.exit(0)
@@ -345,7 +362,6 @@ def main():
                     sys.exit(1)
             else:
                 result = run_offline_command(config, config_options)
-
     if client is True:
         return result
     else:
@@ -354,5 +370,31 @@ def main():
 
 
 if __name__ == '__main__':
+    import sys
+
+    # -------- create wallet ----------------
+    # sys.argv.append('create')
+    # sys.argv.append('31f7e6703d5c11e893fcf48e3889c8ab_justin')
+
+    # -------- create wallet ----------------
+    # sys.argv.append('getbalance')
+    # sys.argv.append('justin')
+
+    # -------- list address ----------------
+    # sys.argv.append('listaddresses')
+    # sys.argv.append('justin')
+
+    #  -------- send to address ----------------
+    # sys.argv.append('paytoandsend')x
+    # sys.argv.append('uWNsSvyHPTmwd2eUxhtLPXPSBZP6neJRfz')
+    # sys.argv.append('50')
+    # sys.argv.append('default_wallet')
+
+    # -------- start daemon ----------------
+    sys.argv.append('daemon')
+    sys.argv.append('start')
+    sys.argv.append('-v')
+
+    print sys.argv
     rs = main()
 

@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 import errno
 import json
 import logging

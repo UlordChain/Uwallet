@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 #!/usr/bin/env python
 #
 # Electrum - lightweight Bitcoin client
@@ -28,7 +29,7 @@ import ecdsa
 import pbkdf2
 
 from uwallet import version
-from uwallet.hashing import hmac_sha_512
+from uwallet.ulord import is_new_seed
 
 log = logging.getLogger(__name__)
 
@@ -167,8 +168,3 @@ class Mnemonic(object):
                 break
         log.info('%d words', len(seed.split()))
         return seed
-
-def is_new_seed(x, prefix=version.SEED_PREFIX):
-    x = prepare_seed(x)
-    s = hmac_sha_512("Seed version", x.encode('utf8')).encode('hex')
-    return s.startswith(prefix)

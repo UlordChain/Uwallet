@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 import binascii
 
 from uwallet.hashing import Hash

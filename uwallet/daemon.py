@@ -1,6 +1,8 @@
+#-*- coding: UTF-8 -*-
 import ast
 import os
 
+import chardet
 import jsonrpclib
 from jsonrpclib.SimpleJSONRPCServer import SimpleJSONRPCRequestHandler, SimpleJSONRPCServer
 
@@ -8,7 +10,9 @@ from uwallet.commands import Commands, known_commands
 from uwallet.simple_config import SimpleConfig
 from uwallet.util import DaemonThread, json_decode
 from uwallet.wallet import Wallet, WalletStorage
-
+import thread
+import time
+from multiprocessing import Process
 
 def lockfile(config):
     return os.path.join(config.path, 'daemon')
@@ -47,17 +51,20 @@ class Daemon(DaemonThread):
         self.config = config
         self.network = network
         self.wallets = {}
-        self.wallet = self.load_wallet(config.get_wallet_path())
-        self.cmd_runner = Commands(self.config, self.wallet, self.network)
-        host = config.get('rpchost', 'localhost')
-        port = config.get('rpcport', 0)
+        self.load_wallet(config.get_wallet_path())
+        self.cmd_runner = Commands(self.config, self.wallets, self.network)
+
+        host = config.get('rpchost', '0.0.0.0')
+        port = config.get('rpcport', 8000)
         self.server = SimpleJSONRPCServer((host, port), requestHandler=RequestHandler,
                                           logRequests=False)
         with open(lockfile(config), 'w') as f:
             f.write(repr(self.server.socket.getsockname()))
         self.server.timeout = 0.1
         for cmdname in known_commands:
+            # rpc直接调用命令 --hetao
             self.server.register_function(getattr(self.cmd_runner, cmdname), cmdname)
+        # 用命令行调用命令， 转而在命令行调用rpc
         self.server.register_function(self.run_cmdline, 'run_cmdline')
         self.server.register_function(self.ping, 'ping')
         self.server.register_function(self.run_daemon, 'daemon')
@@ -88,10 +95,23 @@ class Daemon(DaemonThread):
         return response
 
     def load_wallet(self, path, get_wizard=None):
-        if path in self.wallets:
-            wallet = self.wallets[path]
-        else:
-            storage = WalletStorage(path)
+        for filename in os.listdir(path):
+            # 解决有些系统编码问题， 因为钱包存文件 --hetao
+            def decode_filename(encoding):
+                try:
+                    return filename.decode(encoding)
+                except:
+                    return None
+
+            filename = decode_filename('utf-8') or decode_filename('gbk')
+            if filename is None:
+                return {
+                    'success': False,
+                    'reason': "the %s encoding neither 'utf-8', 'gbk'" % filename
+                }
+
+            filepath = os.path.join(path, filename)
+            storage = WalletStorage(filepath)
             if get_wizard:
                 if storage.file_exists:
                     wallet = Wallet(storage)
@@ -99,6 +119,7 @@ class Daemon(DaemonThread):
                 else:
                     action = 'new'
                 if action:
+                    # todo： 这是干吗
                     wizard = get_wizard()
                     wallet = wizard.run(self.network, storage)
                 else:
@@ -115,31 +136,53 @@ class Daemon(DaemonThread):
 
                 wallet.start_threads(self.network)
             if wallet:
-                self.wallets[path] = wallet
-        return wallet
+                self.wallets[filename] = wallet
 
     def run_cmdline(self, config_options):
         config = SimpleConfig(config_options)
         cmdname = config.get('cmd')
         cmd = known_commands[cmdname]
-        path = config.get_wallet_path()
-        wallet = self.load_wallet(path) if cmd.requires_wallet else None
+        # wallet = self.load_wallet(path) if cmd.requires_wallet else None
         # arguments passed to function
         args = map(lambda x: config.get(x), cmd.params)
         # decode json arguments
         args = map(json_decode, args)
         # options
         args += map(lambda x: config.get(x), cmd.options)
-        cmd_runner = Commands(config, wallet, self.network,
+        cmd_runner = Commands(config, self.wallets, self.network,
                               password=config_options.get('password'),
                               new_password=config_options.get('new_password'))
         func = getattr(cmd_runner, cmd.name)
         result = func(*args)
         return result
 
+
     def run(self):
+        i = 0
         while self.is_running():
-            self.server.handle_request()
+            # self.server.handle_request()
+            try:
+                thread.start_new_thread(self.server.handle_request, ())
+                time.sleep(0.01)
+                i = i+1
+            except Exception,ex:
+                i = 0
+                print ex
+                continue
+        os.unlink(lockfile(self.config))
+
+    def runProc(self):
+        i = 0
+        while True:
+            try:
+                p = Process(target=self.server.handle_request, args=((),))
+                p.start()
+                p.join()
+                i = i+1
+            except Exception,ex:
+                i = 0
+                print ex
+                continue
         os.unlink(lockfile(self.config))
 
     def stop(self):

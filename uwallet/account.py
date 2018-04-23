@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 import logging
 
 from uwallet.util import rev_hex, int_to_hex, is_extended_pubkey

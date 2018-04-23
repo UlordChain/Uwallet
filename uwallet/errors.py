@@ -1,8 +1,6 @@
 class NotEnoughFunds(Exception):
     pass
 
-class InvalidTtransferFee(Exception):
-    pass
 
 class InvalidPassword(Exception):
     def __str__(self):

@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 # from http://eli.thegreenplace.net/2009/03/07/computing-modular-square-roots-in-python/
 
 

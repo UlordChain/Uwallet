@@ -28,8 +28,10 @@ def set_config(c):
 #TODO: modifi ip 
 DEFAULT_CONFIG = {
     'default_servers': {
-        #'114.67.37.2': {'t': '10579'}
-        '192.168.14.253': {'t': '50001'}
+        # '192.168.14.253': {'t': '50001'},
+        '114.67.37.2': {'t': '10579'},
+        # '47.75.4.172': {'t': '50001'},
+        # '119.27.161.117': {'t': '19888'},
     },
     'chain': 'ulord_main'
 }
@@ -172,7 +174,8 @@ class SimpleConfig(object):
         if not os.path.exists(dirpath):
             os.mkdir(dirpath)
 
-        new_path = os.path.join(self.path, "wallets", "default_wallet")
+        new_path = os.path.join(self.path, "wallets", "")
+        #new_path = os.path.join(self.path, "wallets", "default_wallet")
 
         # default path in pre 1.9 versions
         old_path = os.path.join(self.path, "uwallet.dat")

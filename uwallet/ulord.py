@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 import base64
 import hashlib
 import hmac
@@ -121,7 +122,11 @@ def op_push(i):
         return '4e' + int_to_hex(i, 4)
 
 
-
+def is_new_seed(x, prefix=version.SEED_PREFIX):
+    import mnemonic
+    x = mnemonic.prepare_seed(x)
+    s = hmac_sha_512("Seed version", x.encode('utf8')).encode('hex')
+    return s.startswith(prefix)
 
 
 # pywallet openssl private key implementation

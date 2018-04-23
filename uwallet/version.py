@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 from uwallet import __version__
 
 UWALLET_VERSION = __version__

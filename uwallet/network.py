@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 import Queue
 import errno
 import logging
@@ -12,7 +13,7 @@ from threading import Lock
 
 from uwallet import __version__ as UWALLET_VERSION
 from uwallet.constants import COIN, BLOCKS_PER_CHUNK, DEFAULT_PORTS, proxy_modes
-from uwallet.constants import SERVER_RETRY_INTERVAL, NODES_RETRY_INTERVAL,NETWORK_TIMEOUT
+from uwallet.constants import SERVER_RETRY_INTERVAL, NODES_RETRY_INTERVAL
 from uwallet.util import DaemonThread, normalize_version
 from uwallet.blockchain import get_blockchain
 from uwallet.interface import Connection, Interface
@@ -128,6 +129,10 @@ class Network(DaemonThread):
     servers, each connected socket is handled by an Interface() object.
     Connections are initiated by a Connection() thread which stops once
     the connection succeeds or fails.
+
+    这个network类 管理一个由连接到远程远程钱包服务器的链接组成的元组，
+    每个socket连接由Interface对象操作
+    Connections 通过一个一旦成功或失败就结束的Connection线程创建
 
     Our external API:
 
@@ -694,7 +699,7 @@ class Network(DaemonThread):
                 # Request headers if it is ahead of our blockchain
                 if not self.bc_request_headers(interface, data):
                     continue
-            elif time.time() - req_time > NETWORK_TIMEOUT:
+            elif time.time() - req_time > 30:
                 log.error("blockchain request timed out")
                 self.connection_down(interface.server)
                 continue
@@ -710,17 +715,13 @@ class Network(DaemonThread):
             return
         rin = [i for i in self.interfaces.values()]
         win = [i for i in self.interfaces.values() if i.unsent_requests]
-        failed_flag = False
         try:
             rout, wout, xout = select.select(rin, win, [], 0.2)
-        except select.error as (code, msg):
+        except socket.error as (code, msg):
             if code == errno.EINTR:
                 return
-            failed_flag = True
-        if failed_flag or xout:
-            for interface in self.interfaces.values():
-                self.connection_down(interface.server)
-            return
+            raise
+        assert not xout
         for interface in wout:
             interface.send_requests()
         for interface in rout:
@@ -774,7 +775,7 @@ class Network(DaemonThread):
         else:
             return 0
 
-    def synchronous_get(self, request, timeout=NETWORK_TIMEOUT):
+    def synchronous_get(self, request, timeout=30):
         queue = Queue.Queue()
         self.send([request], queue.put)
         try:
