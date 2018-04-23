@@ -15,6 +15,9 @@ TYPE_UPDATE = 32
 BINDING_FEE = 10000
 PLATFORM_ADDRESS = "uR2NcaKGoD5Ktqs8eUdeeCDY3pFX8saoMB"
 
+# The cost of publishing resources and updating resources
+CLAIM_FEE = 1
+UPDATE_FEE = 0.01
 
 # claim related constants
 EXPIRATION_BLOCKS = 262974

@@ -22,7 +22,7 @@ from uwallet import __version__
 from uwallet.contacts import Contacts
 from uwallet.constants import COIN, TYPE_ADDRESS, TYPE_CLAIM, TYPE_SUPPORT, TYPE_UPDATE
 from uwallet.constants import RECOMMENDED_CLAIMTRIE_HASH_CONFIRMS, MAX_BATCH_QUERY_SIZE
-from uwallet.constants import MAX_TRANSFER_FEE,MIN_TRANSFER_FEE
+from uwallet.constants import MAX_TRANSFER_FEE, CLAIM_FEE, UPDATE_FEE
 from uwallet.constants import BINDING_FEE, PLATFORM_ADDRESS
 from uwallet.hashing import Hash, hash_160, sha256
 from uwallet.claims import verify_proof
@@ -1741,7 +1741,7 @@ class Commands(object):
             return {'error': err}
 
     @command('wpn')
-    def claim(self, name, val, amount=1, certificate_id=None, broadcast=True, claim_addr=None,
+    def claim(self, name, val, amount=CLAIM_FEE, certificate_id=None, broadcast=True, claim_addr=None,
               tx_fee=None, change_addr=None, raw=False, skip_validate_schema=None,
               skip_update_check=None):
         """
@@ -1766,8 +1766,9 @@ class Commands(object):
                                                          skip_validate_signatures=True)
                          if claim['name'] == name]
             if len(my_claims) > 1:
-                return {'success': False, 'reason': "Dont know which claim to update"}
-            if my_claims:
+                return {'success': False, 
+                        'reason': "Multiple claims (%i) already exist for %s, "
+                                  "dont know which claim to update" % (len(my_claims), name)}
                 my_claim = my_claims[0]
 
                 if parsed_uri.claim_id and not my_claim['claim_id'].startswith(parsed_uri.claim_id):
@@ -1775,7 +1776,7 @@ class Commands(object):
                             'reason': 'claim id in URI does not match claim to update'}
                 log.info("There is an unspent claim in your wallet for this name, updating "
                          "it instead")
-                return self.update(name, val, amount=amount, broadcast=broadcast,
+                return self.update(name, val, amount=UPDATE_FEE, broadcast=broadcast,
                                    claim_addr=claim_addr,
                                    tx_fee=tx_fee, change_addr=change_addr,
                                    certificate_id=certificate_id, raw=raw,
