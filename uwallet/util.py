@@ -95,7 +95,10 @@ class DaemonThread(threading.Thread, PrintError):
     def remove_jobs(self, jobs):
         with self.job_lock:
             for job in jobs:
-                self.jobs.remove(job)
+                if job in self.jobs:
+                    self.jobs.remove(job)
+                else:
+                    log.warning("job was already removed.")
 
     def start(self):
         with self.running_lock:

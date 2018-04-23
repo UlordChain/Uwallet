@@ -48,9 +48,9 @@ setup(
     package_data={'uwallet': ['wordlist/*.txt']},
     entry_points={'console_scripts': console_scripts},
     description="Lightweight ulord Wallet",
-    author="UT Inc.",
+    author="UlordChain .",
     author_email="JustinQP007@gmail.com",
-    license="GNU GPLv3",
+    license="MIT",
     url="http://ulord.one/",
     long_description="""Lightweight ulord Wallet""",
     zip_safe=False

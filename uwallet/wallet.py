@@ -20,7 +20,7 @@ from uwallet.account import ImportedAccount, Multisig_Account, BIP32_Account
 from uwallet.constants import TYPE_ADDRESS, TYPE_CLAIM, TYPE_SUPPORT, TYPE_UPDATE, TYPE_PUBKEY
 from uwallet.constants import EXPIRATION_BLOCKS, COINBASE_MATURITY, RECOMMENDED_FEE
 from uwallet.coinchooser import COIN_CHOOSERS
-from uwallet.mnemonic import Mnemonic
+from uwallet.mnemonic import Mnemonic, is_new_seed
 from uwallet.synchronizer import Synchronizer
 from uwallet.transaction import Transaction
 from uwallet.util import PrintError, profiler, rev_hex
@@ -28,7 +28,7 @@ from uwallet.errors import NotEnoughFunds, InvalidPassword
 from uwallet.verifier import SPV
 from uwallet.version import NEW_SEED_VERSION
 from uwallet.ulord import regenerate_key, is_address, is_compressed, pw_encode, pw_decode
-from uwallet.ulord import is_new_seed, hash_160_to_bc_address, xpub_from_xprv, bip32_private_key
+from uwallet.ulord import hash_160_to_bc_address, xpub_from_xprv, bip32_private_key
 from uwallet.ulord import encode_claim_id_hex, deserialize_xkey, claim_id_hash, is_private_key
 from uwallet.ulord import public_key_from_private_key, public_key_to_bc_address
 from uwallet.ulord import bip32_public_derivation, bip32_private_derivation, bip32_root
@@ -107,6 +107,10 @@ class WalletStorage(PrintError):
                 self.data.pop(key)
 
     def write(self):
+        with self.lock:
+            self._write()
+
+    def _write(self):
         if threading.currentThread().isDaemon():
             log.warning('daemon thread cannot write wallet')
             return
@@ -1321,8 +1325,11 @@ class Abstract_Wallet(PrintError):
     def stop_threads(self):
         if self.network:
             self.network.remove_jobs([self.synchronizer, self.verifier])
-            self.synchronizer.release()
-            self.synchronizer = None
+            if self.synchronizer:
+                self.synchronizer.release()
+                self.synchronizer = None
+            else:
+                log.warning("Synchronizer alread released.")
             self.verifier = None
             # Now no references to the syncronizer or verifier
             # remain so they will be GC-ed

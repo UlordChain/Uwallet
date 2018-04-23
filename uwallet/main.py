@@ -354,15 +354,5 @@ def main():
 
 
 if __name__ == '__main__':
-    # import sys
-    # import json
-    # sys.argv.append('deserialize')
-    # sys.argv.append('lqpzy1')
-    # sys.argv.append(json.dumps(""))
-
-    #sys.argv.append(json.dumps(["0230aafc1d7f5c682b67496f91fe05b6a7f5cc849158ca88fa04b3d495b7e4bc71",
-    #                             "03b4eb2652b08e44c01dee3d021f14e9c0f139d5a4a261d743a85c99ce7332460c",
-    #                             "02333bfc55715caa54d16fb416717d3bbd6ef8d84f8ce2dcd62c625cfeaae7cfd4"]))
-    # print sys.argv
     rs = main()
 

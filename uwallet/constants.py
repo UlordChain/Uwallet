@@ -10,6 +10,12 @@ TYPE_CLAIM = 8
 TYPE_SUPPORT = 16
 TYPE_UPDATE = 32
 
+
+# The cost of binding resources,it a minimum currency unit.--Justin
+BINDING_FEE = 10000
+PLATFORM_ADDRESS = "uR2NcaKGoD5Ktqs8eUdeeCDY3pFX8saoMB"
+
+
 # claim related constants
 EXPIRATION_BLOCKS = 262974
 RECOMMENDED_CLAIMTRIE_HASH_CONFIRMS = 1
@@ -20,6 +26,10 @@ NULL_HASH = '0000000000000000000000000000000000000000000000000000000000000000'
 HEADER_SIZE = 140
 BLOCKS_PER_CHUNK = 96   #1d / 150s
 
+MIN_TRANSFER_FEE = 10000
+MAX_TRANSFER_FEE = 0.2 * COIN
+
+
 #TODO add it. --JustinQP
 HEADERS_URL = "" 
 
@@ -27,6 +37,7 @@ DEFAULT_PORTS = {'t': '50001', 's': '50002', 'h': '8081', 'g': '8082'}
 NODES_RETRY_INTERVAL = 60
 SERVER_RETRY_INTERVAL = 10
 MAX_BATCH_QUERY_SIZE = 500
+NETWORK_TIMEOUT = 45
 proxy_modes = ['socks4', 'socks5', 'http']
 
 # Main network and testnet3 definitions

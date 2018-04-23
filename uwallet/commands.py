@@ -22,6 +22,8 @@ from uwallet import __version__
 from uwallet.contacts import Contacts
 from uwallet.constants import COIN, TYPE_ADDRESS, TYPE_CLAIM, TYPE_SUPPORT, TYPE_UPDATE
 from uwallet.constants import RECOMMENDED_CLAIMTRIE_HASH_CONFIRMS, MAX_BATCH_QUERY_SIZE
+from uwallet.constants import MAX_TRANSFER_FEE,MIN_TRANSFER_FEE
+from uwallet.constants import BINDING_FEE, PLATFORM_ADDRESS
 from uwallet.hashing import Hash, hash_160
 from uwallet.claims import verify_proof
 from uwallet.ulord import hash_160_to_bc_address, is_address, decode_claim_id_hex
@@ -31,7 +33,7 @@ from uwallet.base import base_decode
 from uwallet.transaction import Transaction
 from uwallet.transaction import decode_claim_script, deserialize as deserialize_transaction
 from uwallet.transaction import get_address_from_output_script, script_GetOp
-from uwallet.errors import InvalidProofError, NotEnoughFunds
+from uwallet.errors import InvalidProofError, NotEnoughFunds, InvalidTtransferFee
 from uwallet.util import format_satoshis, rev_hex
 from uwallet.mnemonic import Mnemonic
 
@@ -108,6 +110,7 @@ class Commands(object):
         self.contacts = Contacts(self.config)
 
     def _run(self, method, args, password_getter):
+        print "debug:Is this function running? "
         cmd = known_commands[method]
         if cmd.requires_password and self.wallet.use_encryption:
             self._password = apply(password_getter, ())
@@ -454,6 +457,10 @@ class Commands(object):
                     dummy_tx = Transaction.from_io(inputs, [output])
                     fee_per_kb = self.wallet.fee_per_kb(self.config)
                     fee = dummy_tx.estimated_fee(self.wallet.relayfee(), fee_per_kb)
+                    if fee >= MAX_TRANSFER_FEE:
+                        print "There is too much data for a single transaction, exceeding the maximum limit.\
+                              Please integrate fragmented UTXO first."
+                        raise InvalidTtransferFee
                 amount -= fee
             else:
                 amount = int(COIN * Decimal(amount))
@@ -469,7 +476,9 @@ class Commands(object):
                 txout_type |= TYPE_SUPPORT
                 val = ((claim_name, claim_id), val)
             elif claim_name is not None and claim_val is not None:
-                assert len(outputs) == 1
+                # Try to modify the structure of the published resources. --JustinQP
+                # assert len(outputs) == 1   
+                assert len(outputs) == 2
                 txout_type |= TYPE_CLAIM
                 val = ((claim_name, claim_val), val)
             final_outputs.append((txout_type, val, amount))
@@ -483,6 +492,11 @@ class Commands(object):
             self.wallet.sign_transaction(tx, self._password)
 
         return tx
+
+    @command('wp')
+    def getnewaddress(self):
+        """Get a new receive address."""
+        return self.wallet.create_new_address()
 
     @command('wp')
     def getunusedaddress(self, account=None):
@@ -520,6 +534,17 @@ class Commands(object):
         tx = self._mktx([(destination, amount)], tx_fee, change_addr, domain, nocheck, unsigned)
         return self.network.synchronous_get(('blockchain.transaction.broadcast', [str(tx)]))
 
+    @command('wpn')
+    def testpaytoandsend(self, destination, amount, tx_fee=None, from_addr=None, change_addr=None,
+                     nocheck=False, unsigned=False):
+        """The purpose is to test generate txid. --JustinQP """
+        domain = [from_addr] if from_addr else None
+        tx = self._mktx([(destination, amount)], tx_fee, change_addr, domain, nocheck, unsigned)
+        self.network.synchronous_get(('blockchain.transaction.broadcast', [str(tx)]))
+        raw = str(tx)
+        tx_double_hash = sha256(sha256(raw))
+        return  tx_double_hash[::-1].encode('hex')
+
     @command('w')
     def waitfortxinwallet(self, txid, timeout=30):
         """
@@ -548,7 +573,8 @@ class Commands(object):
         txid = claim['txid']
         nout = claim['nout']
         claim_name = claim['name']
-        claim_val =  base64_to_json(claim['value']).encode('hex')
+        claim_val = claim['value']
+        # claim_val =  base64_to_json(claim['value']).encode('hex')
         certificate_id = None
         if not skip_validate_schema:
             decoded = smart_decode(claim_val)
@@ -833,10 +859,11 @@ class Commands(object):
         if not raw:
             claim_value = claim_result['value']
             try:
-                
+
                 # Because I did a base64 encoding when I wrote the transaction --JustinQP
-                claim_value_decoded = base64.b64decode(claim_value.decode('hex'))       
-                decoded = smart_decode(claim_value_decoded.encode('hex'))
+                # claim_value_decoded = base64.b64decode(claim_value.decode('hex'))       
+                # decoded = smart_decode(claim_value_decoded.encode('hex'))
+                decoded = smart_decode(claim_value)
                 claim_result['value'] = decoded.claim_dict
                 claim_result['decoded_claim'] = True
             except DecodeError:
@@ -1705,8 +1732,9 @@ class Commands(object):
         """
 
         try:
-            claim_value_decoded = base64.b64decode(val.decode('hex'))
-            decoded = smart_decode(claim_value_decoded)
+            # claim_value_decoded = base64.b64decode(val.decode('hex'))
+            # decoded = smart_decode(claim_value_decoded)
+            decoded = smart_decode(val)
             results = {'claim_dictionary': decoded.claim_dict,
                        'serialized': decoded.serialized.encode('hex')}
             return results
@@ -1714,7 +1742,7 @@ class Commands(object):
             return {'error': err}
 
     @command('wpn')
-    def claim(self, name, val, amount, certificate_id=None, broadcast=True, claim_addr=None,
+    def claim(self, name, val, amount=1, certificate_id=None, broadcast=True, claim_addr=None,
               tx_fee=None, change_addr=None, raw=False, skip_validate_schema=None,
               skip_update_check=None):
         """
@@ -1803,7 +1831,10 @@ class Commands(object):
             signed = claim_value.sign(signing_key, claim_addr, certificate_id, curve=SECP256k1)
             val = signed.serialized
 
-        outputs = [(TYPE_ADDRESS | TYPE_CLAIM, ((name, val), claim_addr), amount)]
+        # commission : The amount paid to the platform.  --JustinQP
+        commission = amount - BINDING_FEE
+        outputs = [(TYPE_ADDRESS | TYPE_CLAIM, ((name, val), claim_addr), BINDING_FEE),
+                   (TYPE_ADDRESS, PLATFORM_ADDRESS, commission)]
         coins = self.wallet.get_spendable_coins()
         try:
             tx = self.wallet.make_unsigned_transaction(coins, outputs,
@@ -2217,7 +2248,7 @@ class Commands(object):
 
         :returns formatted claim result
         """
-        gl.NEED_MODIFY_CLAIM = True
+        #gl.flag_claim = True
         if skip_validate_schema and certificate_id:
             return {'success': False, 'reason': 'refusing to sign claim without validated schema'}
 
@@ -2513,7 +2544,7 @@ class Commands(object):
 
         Either specify the claim with a claim_id or with txid and nout
         """
-        gl.NEED_MODIFY_CLAIM = True
+        # gl.flag_claim = True
         claims = self.getnameclaims(raw=True, include_abandoned=False, include_supports=True,
                                     claim_id=claim_id, txid=txid, nout=nout,
                                     skip_validate_signatures=True)
