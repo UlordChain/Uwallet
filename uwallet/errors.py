@@ -8,6 +8,8 @@ class InvalidPassword(Exception):
     def __str__(self):
         return "Incorrect password"
 
+class InvalidClaimId(Exception):
+    pass
 
 class Timeout(Exception):
     pass

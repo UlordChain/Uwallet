@@ -24,7 +24,7 @@ from uwallet.constants import COIN, TYPE_ADDRESS, TYPE_CLAIM, TYPE_SUPPORT, TYPE
 from uwallet.constants import RECOMMENDED_CLAIMTRIE_HASH_CONFIRMS, MAX_BATCH_QUERY_SIZE
 from uwallet.constants import MAX_TRANSFER_FEE,MIN_TRANSFER_FEE
 from uwallet.constants import BINDING_FEE, PLATFORM_ADDRESS
-from uwallet.hashing import Hash, hash_160
+from uwallet.hashing import Hash, hash_160, sha256
 from uwallet.claims import verify_proof
 from uwallet.ulord import hash_160_to_bc_address, is_address, decode_claim_id_hex
 from uwallet.ulord import encode_claim_id_hex, encrypt_message, public_key_from_private_key
@@ -33,11 +33,10 @@ from uwallet.base import base_decode
 from uwallet.transaction import Transaction
 from uwallet.transaction import decode_claim_script, deserialize as deserialize_transaction
 from uwallet.transaction import get_address_from_output_script, script_GetOp
-from uwallet.errors import InvalidProofError, NotEnoughFunds, InvalidTtransferFee
+from uwallet.errors import InvalidProofError, NotEnoughFunds
+from uwallet.errors import InvalidTtransferFee,InvalidClaimId
 from uwallet.util import format_satoshis, rev_hex
 from uwallet.mnemonic import Mnemonic
-
-from uwallet import gl
 
 log = logging.getLogger(__name__)
 
@@ -2033,8 +2032,10 @@ class Commands(object):
             claim_addr = self.wallet.get_least_used_address()
         if change_addr is None:
             change_addr = self.wallet.get_least_used_address(for_change=True)
-
-        claim_id = decode_claim_id_hex(claim_id)
+        try:
+            claim_id = decode_claim_id_hex(claim_id)
+        except InvalidClaimId:
+            return {'success': False, 'reason': 'Invalid claim id'}
         amount = int(COIN * amount)
         if amount <= 0:
             return {'success': False, 'reason': 'Amount must be greater than 0'}

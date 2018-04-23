@@ -15,8 +15,9 @@ from ecdsa.util import number_to_string, string_to_number
 from uwallet import msqr, version
 from uwallet.base import base_decode, base_encode, EncodeBase58Check, DecodeBase58Check, __b58chars
 from uwallet.util import print_error, rev_hex, var_int, int_to_hex
-from uwallet.hashing import Hash, sha256, hash_160, hmac_sha_512
-from uwallet.errors import InvalidPassword
+from uwallet.hashing import Hash, sha256, hash_160
+from uwallet.errors import InvalidPassword, InvalidClaimId
+from uwallet.constants import CLAIM_ID_SIZE
 
 log = logging.getLogger(__name__)
 
@@ -41,8 +42,10 @@ def claim_id_hash(txid, n):
 
 # deocde a claim_id hex string
 def decode_claim_id_hex(claim_id_hex):
-    return rev_hex(claim_id_hex).decode('hex')
-
+    claim_id = rev_hex(claim_id_hex).decode('hex')
+    if len(claim_id) != CLAIM_ID_SIZE:
+        raise InvalidClaimId()
+    return claim_id
 
 # encode claim id bytes into hex string
 def encode_claim_id_hex(claim_id):
