@@ -506,6 +506,11 @@ class Commands(object):
         return addr
 
     @command('wp')
+    def getnewaddress(self):
+        """Get a new receive address."""
+        return self.wallet.create_new_address()
+
+    @command('wp')
     def getleastusedchangeaddress(self, account=None):
         return self.wallet.get_least_used_address(account, for_change=True)
 
@@ -2346,6 +2351,7 @@ class Commands(object):
 
         tx = Transaction.from_io(inputs, outputs)
         self.wallet.sign_transaction(tx, self._password)
+        gl.NEED_MODIFY_CLAIM = False
         if broadcast:
             success, out = self.wallet.send_tx(tx)
             if not success:
@@ -2570,11 +2576,11 @@ class Commands(object):
         if fee > txout_value:
             return {'success': False, 'reason': 'transaction fee exceeds amount to abandon'}
         return_value = txout_value - fee
-
         # create transaction
         outputs = [(TYPE_ADDRESS, return_addr, return_value)]
         tx = Transaction.from_io(inputs, outputs)
         self.wallet.sign_transaction(tx, self._password)
+        gl.NEED_MODIFY_CLAIM = False
         if broadcast:
             success, out = self.wallet.send_tx(tx)
             if not success:
