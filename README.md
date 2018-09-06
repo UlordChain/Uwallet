@@ -1,3 +1,6 @@
+This version is no longer supported. Please use uwallet-client-pro.
+go to https://github.com/UlordChain/uwallet-client-pro
+
 # Ulord Wallet Command client
 
 ### To install uwallet, run the following from this directory (use of a virtualenv is recommended):
